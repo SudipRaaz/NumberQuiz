@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/route/routes.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 
+//developed on flutter version 3.3.4
 void main() {
   runApp(const MyApp());
 }

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Message {
-  void flushBarErrorMessage(BuildContext context, String message) {
+  static void flushBarErrorMessage(BuildContext context, String message) {
     showFlushbar(
       context: context,
       flushbar: Flushbar(

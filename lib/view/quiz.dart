@@ -4,11 +4,6 @@
 // import 'package:flutter/gestures.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
-// import 'package:smile/services/remote.dart';
-// import 'package:smile/views/Answer_tile.dart';
-// import 'package:smile/views/summaryPage.dart';
-// import '../models/Question.dart';
-// import 'package:smile/models/global.dart' as global;
 
 // class Quiz extends StatefulWidget {
 //   const Quiz({super.key});

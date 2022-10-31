@@ -8,8 +8,6 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Message obj = Message();
-
     return Scaffold(
       body: Container(
           width: double.infinity,
@@ -29,10 +27,15 @@ class Dashboard extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, RoutesName.login);
                   },
+                  child: const Text("Login")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutesName.quizPage);
+                  },
                   child: const Text("Play game")),
               ElevatedButton(
                   onPressed: () {
-                    obj.flushBarErrorMessage(
+                    Message.flushBarErrorMessage(
                         context, "Leadership board not available");
                   },
                   child: const Text("Leadership Board")),

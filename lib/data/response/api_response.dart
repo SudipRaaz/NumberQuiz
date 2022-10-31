@@ -11,10 +11,10 @@ class ApiResponse<T> {
   ApiResponse.loading() : status = Status.LOADING;
 
   // when api response is complete then set Status complete from super enum class
-  ApiResponse.complete() : status = Status.COMPLETED;
+  ApiResponse.complete(this.data) : status = Status.COMPLETED;
 
   // when api response is error then set Status error from super enum class
-  ApiResponse.error() : status = Status.ERROR;
+  ApiResponse.error(this.message) : status = Status.ERROR;
 
   @override
   String toString() {

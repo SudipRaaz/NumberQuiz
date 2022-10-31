@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:smile_quiz/data/app_exceptions.dart';
 import 'package:smile_quiz/data/network/BaseApiServices.dart';
 import 'package:http/http.dart' as http;
+import 'package:smile_quiz/model/quiz_model.dart';
 
 class NetworkApiService extends BaseApiServices {
   @override
@@ -36,7 +37,7 @@ class NetworkApiService extends BaseApiServices {
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        dynamic responseJson = jsonDecode(response.body);
+        dynamic responseJson = questionFromJson(response.body);
         return responseJson;
 
       case 400:
