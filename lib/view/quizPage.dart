@@ -1,10 +1,8 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smile_quiz/model/quiz_model.dart';
 import 'package:smile_quiz/utilities/functions.dart';
-import 'package:smile_quiz/utilities/route/routes_name.dart';
+import 'package:smile_quiz/view/summary.dart';
 import 'package:smile_quiz/view_model/services/Question_viewModel.dart';
 
 import '../repository/quiz_question.dart';
@@ -69,7 +67,10 @@ class _QuizPageState extends State<QuizPage> {
       }
     } else {
       Navigator.of(context).pop();
-      Navigator.pushNamed(context, RoutesName.summaryPage);
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => QuizSummary(
+                score: totalScore,
+              )));
     }
     print((_quizGame?.question).toString());
     print((_quizGame?.solution).toString());
@@ -92,16 +93,6 @@ class _QuizPageState extends State<QuizPage> {
             )
           ],
           title: Text('Score : ${totalScore}'),
-          // leading: Padding(
-          //   padding: const EdgeInsets.only(top: 18.0, left: 3),
-          //   child: (questionIndex != 0)
-          //       ? Text(
-          //           "${questionIndex} / ${totalQuestions} ",
-          //           style: const TextStyle(
-          //               fontSize: 18, fontWeight: FontWeight.bold),
-          //         )
-          //       : const Text(""),
-          // ),
           centerTitle: true,
         ),
         body: ChangeNotifierProvider<Question_viewModel>(
@@ -141,15 +132,17 @@ class _QuizPageState extends State<QuizPage> {
                   Expanded(
                     flex: 3,
                     child: Container(
-                      // color: Colors.black38,
                       width: double.infinity,
-                      child: Container(
-                        height: 300,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage("${_quizGame?.question}")),
-                            border: Border.all(color: Colors.black38)),
+                      child: InteractiveViewer(
+                        child: Container(
+                          height: 300,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      NetworkImage("${_quizGame?.question}")),
+                              border: Border.all(color: Colors.black38)),
+                        ),
                       ),
                     ),
                   ),

@@ -22,9 +22,6 @@ class Routes {
       case RoutesName.quizPage:
         return MaterialPageRoute(builder: (BuildContext context) => QuizPage());
 
-      case RoutesName.summaryPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => QuizSummary());
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(
