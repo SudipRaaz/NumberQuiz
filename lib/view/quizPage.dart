@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smile_quiz/model/quiz_model.dart';
+import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/utilities/functions.dart';
 import 'package:smile_quiz/view/summary.dart';
 import 'package:smile_quiz/view_model/services/Question_viewModel.dart';
@@ -24,10 +28,16 @@ class _QuizPageState extends State<QuizPage> {
   bool answerSelected = false;
   bool endOfQuiz = false;
 
-  // should derive from a constant storage class
+  // constant values
   int questionIndex = 0;
-  int totalQuestions = 5;
+  // accepts only static constant values
+  int totalQuestions = AppConstant.totalQuestions;
   int totalScore = 0;
+  double timeLeft = AppConstant.timeLeft;
+  double maxTime = AppConstant.maxTime;
+
+  // timer
+  Timer? _timer;
 
   List<int> answerOptions = [];
 
@@ -35,6 +45,7 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     // TODO: implement initState
     getQuestion();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startTimer());
     super.initState();
   }
 
@@ -42,6 +53,7 @@ class _QuizPageState extends State<QuizPage> {
   void questionAnswered(int answered, int correctAnswer) {
     setState(() {
       answerSelected = true;
+      _cancelTimer();
     });
 
     if (answered == correctAnswer) {
@@ -49,6 +61,7 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
+  // get the question set from the smile api
   getQuestion() async {
     print(_quizGame); //for test
     _quizGame = await _quiz_repo.fetchGameQuestionsAPI();
@@ -58,7 +71,9 @@ class _QuizPageState extends State<QuizPage> {
           _isLoaded = true;
           answerSelected = false;
           answerOptions = [];
+          // get the list of answer options generated
           answerOptions = CustomMethods.getOptions(_quizGame!.solution);
+          // increase question index
           questionIndex++;
           if (questionIndex == totalQuestions) {
             endOfQuiz = true;
@@ -66,6 +81,7 @@ class _QuizPageState extends State<QuizPage> {
         });
       }
     } else {
+      _cancelTimer();
       Navigator.of(context).pop();
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => QuizSummary(
@@ -76,10 +92,52 @@ class _QuizPageState extends State<QuizPage> {
     print((_quizGame?.solution).toString());
   }
 
+  // reset timer
+  void _resetTimer() {
+    setState(() {
+      timeLeft = AppConstant.timeLeft;
+    });
+  }
+
+  // cancel timer
+  void _cancelTimer() {
+    _timer?.cancel();
+  }
+
+// timer functions
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      setState(() {
+        if (timeLeft > 0) {
+          timeLeft--;
+          print(timeLeft);
+        } else {
+          _cancelTimer();
+          answerSelected = true;
+        }
+      });
+    });
+  }
+
+  // handling andriod os back button
+  Future<bool> _onwillpop() async {
+    _cancelTimer();
+    Navigator.of(context).pop();
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () => _onwillpop(),
+      child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                _cancelTimer();
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(CupertinoIcons.back)),
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -89,10 +147,10 @@ class _QuizPageState extends State<QuizPage> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     )
-                  : const Text(""),
+                  : null,
             )
           ],
-          title: Text('Score : ${totalScore}'),
+          title: Text('Score : $totalScore'),
           centerTitle: true,
         ),
         body: ChangeNotifierProvider<Question_viewModel>(
@@ -117,14 +175,14 @@ class _QuizPageState extends State<QuizPage> {
                           borderRadius: BorderRadius.circular(50)),
                       child: Stack(
                         children: [
-                          LayoutBuilder(
-                              builder: (context, Constraints) => Container(
-                                    width: Constraints.maxWidth * 0.95,
-                                    decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                  ))
+                          LinearProgressIndicator(
+                            value: timeLeft / maxTime,
+                            minHeight: 18,
+                            backgroundColor: Colors.white,
+                            color: Colors.green,
+                            semanticsLabel: "time left",
+                            semanticsValue: "values",
+                          )
                         ],
                       ),
                     ),
@@ -185,6 +243,8 @@ class _QuizPageState extends State<QuizPage> {
                           padding: const EdgeInsets.only(left: 15.0),
                           child: ElevatedButton(
                               onPressed: () {
+                                _resetTimer();
+                                _startTimer();
                                 getQuestion();
                               },
                               child: Text("Skip")),
@@ -202,6 +262,8 @@ class _QuizPageState extends State<QuizPage> {
                                               "Please select a answer before proceding to Next Question.")));
                                   return;
                                 }
+                                _resetTimer();
+                                _startTimer();
                                 getQuestion();
                               },
                               child: endOfQuiz
@@ -215,6 +277,8 @@ class _QuizPageState extends State<QuizPage> {
               ),
             );
           }),
-        ));
+        ),
+      ),
+    );
   }
 }
