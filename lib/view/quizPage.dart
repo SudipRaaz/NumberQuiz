@@ -49,6 +49,13 @@ class _QuizPageState extends State<QuizPage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    print("timer disposed");
+    _cancelTimer();
+    super.dispose();
+  }
+
   // checking the answer and marking question set as answered
   void questionAnswered(int answered, int correctAnswer) {
     setState(() {
@@ -107,15 +114,18 @@ class _QuizPageState extends State<QuizPage> {
 // timer functions
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (_) {
-      setState(() {
-        if (timeLeft > 0) {
-          timeLeft--;
-          print(timeLeft);
-        } else {
-          _cancelTimer();
-          answerSelected = true;
-        }
-      });
+      // if this page is still mounted to widget tree then proceed
+      if (mounted) {
+        setState(() {
+          if (timeLeft > 0) {
+            timeLeft--;
+            print(timeLeft);
+          } else {
+            _cancelTimer();
+            answerSelected = true;
+          }
+        });
+      }
     });
   }
 
