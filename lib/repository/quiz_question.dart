@@ -8,8 +8,8 @@ class Quiz_repository {
   BaseApiServices _apiservices = NetworkApiService();
 
   Future<Question> fetchGameQuestionsAPI() async {
-    dynamic response = await _apiservices.getGetApiResponse(AppURL.quizAPI);
     try {
+      dynamic response = await _apiservices.getGetApiResponse(AppURL.quizAPI);
       return response;
     } catch (e) {
       throw e;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/message.dart';
+import 'package:smile_quiz/view_model/services/auth.dart';
 
 import '../utilities/route/routes_name.dart';
 
@@ -16,9 +17,13 @@ class Dashboard extends StatelessWidget {
           child: Column(
             children: [
               Container(),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(100.0),
-                child: Text("hello world"),
+                child: ElevatedButton(
+                    onPressed: () {
+                      Auth().signOut();
+                    },
+                    child: const Text("Help")),
               ),
               const Spacer(
                 flex: 1,

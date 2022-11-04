@@ -43,7 +43,6 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getQuestion();
     WidgetsBinding.instance.addPostFrameCallback((_) => _startTimer());
     super.initState();
@@ -51,7 +50,7 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   void dispose() {
-    print("timer disposed");
+    print("disposed");
     _cancelTimer();
     super.dispose();
   }

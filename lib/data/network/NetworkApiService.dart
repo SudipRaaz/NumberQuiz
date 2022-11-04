@@ -47,7 +47,6 @@ class NetworkApiService extends BaseApiServices {
       case 404:
         throw UnauthorisedException(
             "Error accured during communication ${response.statusCode}");
-
       default:
         throw FetchDataException("Error ${response.statusCode}");
     }

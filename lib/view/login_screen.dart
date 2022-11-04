@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:smile_quiz/utilities/message.dart';
+import 'package:smile_quiz/view_model/services/auth.dart';
 
 import '../resources/components/button.dart';
 
@@ -27,10 +28,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
     _obsecureText.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+
+    // focus nodes disposed
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
   }
@@ -90,11 +92,14 @@ class _LoginScreenState extends State<LoginScreen> {
               if (_emailController.text.isEmpty) {
                 Message.flushBarErrorMessage(
                     context, "Enter a valid Email address");
-              } else if (_passwordController.text.length <= 6) {
+              } else if (_passwordController.text.length < 6) {
                 Message.flushBarErrorMessage(
                     context, "Password must be at least 6 digits");
               } else {
-                print("login requested");
+                Auth().signInWithEmailAndPassword(
+                    context,
+                    _emailController.text.trim(),
+                    _passwordController.text.trim());
               }
             },
           )
