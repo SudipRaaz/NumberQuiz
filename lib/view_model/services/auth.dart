@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smile_quiz/utilities/message.dart';
@@ -22,8 +24,8 @@ class Auth extends Authenticate {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-    } catch (e) {
-      Message.flushBarErrorMessage(context, "${e.toString()}");
+    } catch (error) {
+      Message.flushBarErrorMessage(context, "${error.toString()}");
     }
   }
 
@@ -35,11 +37,20 @@ class Auth extends Authenticate {
   void setLocalUserToken(token) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString("token", '${token}');
+    log(token.toString(), name: "token value in auth");
+    print("token saved ");
   }
 
-  Future<String> get getUserToken async {
+  getUserToken() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var token = await pref.getString('token') ?? '';
-    return token;
+    var token = await pref.getString("token");
+
+    log(token.toString(), name: "token received in auth page");
+    return token.toString();
+  }
+
+  void removeToken() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.remove('token');
   }
 }

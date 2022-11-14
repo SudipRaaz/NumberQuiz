@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:smile_quiz/view/login_screen.dart';
+import 'package:smile_quiz/view/register_screen.dart';
 import 'package:smile_quiz/view/splash_screen.dart';
 import 'package:smile_quiz/view/summary.dart';
 
@@ -16,9 +17,12 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => LoginScreen());
 
+      case RoutesName.register:
+        return MaterialPageRoute(builder: (BuildContext context) => Register());
+
       case RoutesName.dashboard:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const Dashboard());
+            builder: (BuildContext context) => Dashboard());
 
       case RoutesName.quizPage:
         return MaterialPageRoute(builder: (BuildContext context) => QuizPage());

@@ -5,7 +5,7 @@ class AppColors {
   static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color blackColor = Color(0xFF000000);
 
-  static const Color buttonColor = Color.fromARGB(255, 90, 255, 1);
+  static Color login_buttonColor = Color.fromARGB(255, 255, 189, 46);
   // static const Color blackColor = Color(0xFF000000);
 
 }
