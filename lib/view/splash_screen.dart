@@ -57,22 +57,10 @@ class _Splash_ScreenState extends State<Splash_Screen> {
       stream: Auth().authStateChange,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          log(snapshot.data.toString(), name: "snapshot has data");
-          // resetSession(context);
-
           return Dashboard();
         } else {
           return LoginScreen();
         }
-        // if (snapshot.hasData) {
-        //   var data = Auth().currentUser;
-
-        //   log(snapshot.data.toString(), name: "value of token");
-
-        //   return Dashboard();
-        // } else {
-        //   return LoginScreen();
-        // }
       },
     );
   }

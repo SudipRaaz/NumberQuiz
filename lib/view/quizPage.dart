@@ -1,4 +1,7 @@
+// ignore_for_file: unnecessary_brace_in_string_interps
+
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +16,9 @@ import '../repository/quiz_question.dart';
 import '../resources/components/answerTile.dart';
 
 class QuizPage extends StatefulWidget {
-  QuizPage({super.key});
+  QuizPage({required this.timeAvailable, super.key});
+
+  final timeAvailable;
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -33,8 +38,8 @@ class _QuizPageState extends State<QuizPage> {
   // accepts only static constant values
   int totalQuestions = AppConstant.totalQuestions;
   int totalScore = 0;
-  double timeLeft = AppConstant.timeLeft;
-  double maxTime = AppConstant.maxTime;
+  late double timeLeft;
+  late double maxTime;
 
   // timer
   Timer? _timer;
@@ -44,6 +49,9 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     getQuestion();
+    timeLeft = widget.timeAvailable;
+    maxTime = widget.timeAvailable;
+    log("time set $timeLeft", name: "time setted");
     WidgetsBinding.instance.addPostFrameCallback((_) => _startTimer());
     super.initState();
   }
@@ -101,7 +109,7 @@ class _QuizPageState extends State<QuizPage> {
   // reset timer
   void _resetTimer() {
     setState(() {
-      timeLeft = AppConstant.timeLeft;
+      timeLeft = widget.timeAvailable;
     });
   }
 
@@ -143,6 +151,7 @@ class _QuizPageState extends State<QuizPage> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
+                // cancel timer and exit quiz page
                 _cancelTimer();
                 Navigator.of(context).pop();
               },
@@ -151,10 +160,12 @@ class _QuizPageState extends State<QuizPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: (questionIndex != 0)
-                  ? Text(
-                      "${questionIndex} / ${totalQuestions} ",
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                  ? Center(
+                      child: Text(
+                        "${questionIndex} / ${totalQuestions} ",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     )
                   : null,
             )

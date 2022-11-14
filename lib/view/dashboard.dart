@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/resources/textStyle.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/view_model/services/auth.dart';
@@ -90,7 +91,10 @@ class _DashboardState extends State<Dashboard> {
                   child: const Text("Login")),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, RoutesName.quizPage);
+                    Navigator.pushNamed(context, RoutesName.quizPage,
+                        arguments: _quizMode
+                            ? AppConstant.hardModeTimer
+                            : AppConstant.easyModeTimer);
                   },
                   child: const Text("Play game")),
               ElevatedButton(

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/resources/appcolors.dart';
 import 'package:validators/validators.dart';
@@ -7,6 +9,7 @@ import 'package:validators/validators.dart';
 import '../resources/components/button.dart';
 import '../utilities/message.dart';
 import '../view_model/services/auth.dart';
+import '../view_model/services/firestore.dart';
 
 class Register extends StatefulWidget {
   Register({super.key});
@@ -16,20 +19,35 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  ValueNotifier<bool> _obsecureText = ValueNotifier(true);
+  final ValueNotifier<bool> _obsecureText = ValueNotifier(true);
 
   // text controller
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   // focusing pointer
-  FocusNode _nameFocusNode = FocusNode();
-  FocusNode _emailFocusNode = FocusNode();
-  FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   // initial age for registration
   double _initialAge = 10;
+
+  @override
+  // TODO: object disposal
+  void dispose() {
+    super.dispose();
+    _obsecureText.dispose();
+    // controller disposal
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    // focus node disposal
+    _nameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +59,7 @@ class _RegisterState extends State<Register> {
         children: [
           Column(
             children: [
+              // asset app logo display
               Padding(
                 padding: const EdgeInsets.only(top: 20.0, bottom: 30),
                 child: Container(
@@ -50,6 +69,8 @@ class _RegisterState extends State<Register> {
                         image: DecorationImage(
                             image: AssetImage('assets/app_logo.png')))),
               ),
+
+              // name form field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -67,6 +88,8 @@ class _RegisterState extends State<Register> {
                       FocusScope.of(context).requestFocus(_emailFocusNode),
                 ),
               ),
+
+              // email textform field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -78,6 +101,7 @@ class _RegisterState extends State<Register> {
                     label: Text("Email"),
                     prefixIcon: Icon(Icons.email_rounded),
                   ),
+                  // requesting for password field focus
                   onFieldSubmitted: (value) =>
                       FocusScope.of(context).requestFocus(_passwordFocusNode),
                 ),
@@ -91,19 +115,23 @@ class _RegisterState extends State<Register> {
                       "Age",
                       style: TextStyle(fontSize: 18),
                     ),
-                    Container(
+                    SizedBox(
                       width: 300,
+                      // age slider picker
                       child: Slider(
                         value: _initialAge,
-                        min: 10.0,
-                        max: 60.0,
+                        min: 10.0, // min age allowed
+                        max: 60.0, // max age allowed
                         divisions: 50,
+                        // on change started point
                         onChangeStart: (double value) {
                           print('Start value is ' + value.toString());
                         },
+                        // on change end
                         onChangeEnd: (double value) {
                           print('Finish value is ' + value.toString());
                         },
+                        // updating age on slider change
                         onChanged: (double newValue) {
                           setState(() {
                             _initialAge = newValue;
@@ -115,12 +143,14 @@ class _RegisterState extends State<Register> {
                     ),
                     Text(
                       _initialAge.toInt().toString(),
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w500),
                     )
                   ],
                 ),
               ),
+
+              // listining for obsecure icon tap
               ValueListenableBuilder(
                   valueListenable: _obsecureText,
                   builder: (context, obsecureText, child) {
@@ -138,6 +168,7 @@ class _RegisterState extends State<Register> {
                             ),
                             suffixIcon: InkWell(
                                 onTap: () {
+                                  // inverting obsecure password ontap
                                   _obsecureText.value = !_obsecureText.value;
                                 },
                                 child: _obsecureText.value
@@ -151,31 +182,40 @@ class _RegisterState extends State<Register> {
               ),
               Buttons(
                 text: "Register",
-                onPress: () {
-                  if (_emailController.text.isEmpty ||
+                onPress: () async {
+                  // checking for name length
+                  if (_nameController.text.isEmpty) {
+                    Message.flushBarErrorMessage(context, "Enter a valid Name");
+                  }
+                  // checking for email format and length
+                  else if (_emailController.text.isEmpty ||
                       !isEmail(_emailController.text)) {
                     Message.flushBarErrorMessage(
                         context, "Enter a valid Email address");
-                  } else if (_passwordController.text.length < 6) {
+                  }
+                  // checking for password length validation
+                  else if (_passwordController.text.length < 6) {
                     Message.flushBarErrorMessage(
                         context, "Password must be at least 6 digits");
                   } else {
-                    Auth().createUserWithEmailAndPassword(
+                    // registering user with email and password
+                    await Auth().createUserWithEmailAndPassword(
+                        context,
                         _emailController.text.toLowerCase().trim(),
                         _passwordController.text.trim());
-                    // log("registering ", name: "register");
-                    // log(isEmail(_emailController.text).toString(),
-                    //     name: "isEmail");
+
+                    // saving the data onto cloud firestore database
+                    CloudStore.registerUser(
+                        Auth().currentUser?.uid,
+                        _nameController.text,
+                        _emailController.text,
+                        _initialAge.toInt());
+
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
                   }
                 },
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Text("Don't have an account? "),
-              //     TextButton(onPressed: () {}, child: const Text('Sign Up'))
-              //   ],
-              // )
             ],
           ),
         ],

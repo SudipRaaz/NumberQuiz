@@ -11,7 +11,7 @@ import '../../view/quizPage.dart';
 
 class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
-    final argume = settings.arguments;
+    final arg = settings.arguments;
     switch (settings.name) {
       case RoutesName.login:
         return MaterialPageRoute(
@@ -25,7 +25,10 @@ class Routes {
             builder: (BuildContext context) => Dashboard());
 
       case RoutesName.quizPage:
-        return MaterialPageRoute(builder: (BuildContext context) => QuizPage());
+        return MaterialPageRoute(
+            builder: (BuildContext context) => QuizPage(
+                  timeAvailable: arg,
+                ));
 
       case RoutesName.splash_Screen:
         return MaterialPageRoute(

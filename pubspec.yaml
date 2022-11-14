@@ -34,7 +34,7 @@ dependencies:
   
   firebase_auth: ^4.1.0  # firebase authentication
   firebase_core: ^2.1.1  # enable connections to firebase apps
-  # cloud_firestore: ^4.0.5 # store data to firebase datastore
+  cloud_firestore: ^4.0.5 # store data to firebase datastore
     
   http: ^0.13.5  # protocol
   another_flushbar: ^1.12.29  # message carrier

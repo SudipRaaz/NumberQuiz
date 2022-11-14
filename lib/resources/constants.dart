@@ -3,6 +3,6 @@ class AppConstant {
   static int totalQuestions = 5;
 
   // quiz timer
-  static double timeLeft = 30;
-  static double maxTime = 30;
+  static double easyModeTimer = 30;
+  static double hardModeTimer = 15;
 }
