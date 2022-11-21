@@ -26,6 +26,34 @@ class Buttons extends StatelessWidget {
       ),
     );
   }
+
+  static Widget gradientButton(String lable, Function VoidCallback) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: Stack(
+        children: [
+          Positioned.fill(
+              child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+              Color.fromARGB(255, 4, 135, 243),
+              Colors.blue.shade300,
+              Colors.blue.shade200
+            ], end: Alignment.topCenter, begin: Alignment.bottomCenter)),
+          )),
+          TextButton(
+              style: TextButton.styleFrom(padding: EdgeInsets.all(20)),
+              onPressed: () {
+                VoidCallback;
+              },
+              child: Text(
+                "$lable",
+                style: TextStyle(fontSize: 25, color: Colors.white),
+              ))
+        ],
+      ),
+    );
+  }
 }
 
 Widget button_login(String text, bool loading, VoidCallback onPress) {

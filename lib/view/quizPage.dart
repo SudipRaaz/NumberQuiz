@@ -10,15 +10,16 @@ import 'package:smile_quiz/model/quiz_model.dart';
 import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/utilities/functions.dart';
 import 'package:smile_quiz/view/summary.dart';
-import 'package:smile_quiz/view_model/services/Question_viewModel.dart';
+import 'package:smile_quiz/view_model/Question_viewModel.dart';
 
 import '../repository/quiz_question.dart';
 import '../resources/components/answerTile.dart';
 
 class QuizPage extends StatefulWidget {
-  QuizPage({required this.timeAvailable, super.key});
+  QuizPage({required this.timeAvailable, required this.gameMode, super.key});
 
   final timeAvailable;
+  bool gameMode;
 
   @override
   State<QuizPage> createState() => _QuizPageState();
@@ -77,14 +78,13 @@ class _QuizPageState extends State<QuizPage> {
 
   // get the question set from the smile api
   getQuestion() async {
-    print(_quizGame); //for test
     _quizGame = await _quiz_repo.fetchGameQuestionsAPI();
     if (questionIndex != totalQuestions) {
       if (_quizGame != null) {
         setState(() {
-          _isLoaded = true;
-          answerSelected = false;
-          answerOptions = [];
+          _isLoaded = true; // question loaded
+          answerSelected = false; // answer selected status
+          answerOptions = []; // answer options
           // get the list of answer options generated
           answerOptions = CustomMethods.getOptions(_quizGame!.solution);
           // increase question index
@@ -100,10 +100,9 @@ class _QuizPageState extends State<QuizPage> {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => QuizSummary(
                 score: totalScore,
+                gameMode: widget.gameMode,
               )));
     }
-    print((_quizGame?.question).toString());
-    print((_quizGame?.solution).toString());
   }
 
   // reset timer
@@ -120,7 +119,7 @@ class _QuizPageState extends State<QuizPage> {
 
 // timer functions
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       // if this page is still mounted to widget tree then proceed
       if (mounted) {
         setState(() {
@@ -207,6 +206,7 @@ class _QuizPageState extends State<QuizPage> {
                       ),
                     ),
                   ),
+                  // ************question displaying ***************
                   Expanded(
                     flex: 3,
                     child: Container(
@@ -267,7 +267,7 @@ class _QuizPageState extends State<QuizPage> {
                                 _startTimer();
                                 getQuestion();
                               },
-                              child: Text("Skip")),
+                              child: const Text("Skip")),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(right: 15.0),

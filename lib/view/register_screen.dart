@@ -8,7 +8,8 @@ import 'package:validators/validators.dart';
 
 import '../resources/components/button.dart';
 import '../utilities/message.dart';
-import '../view_model/services/auth.dart';
+import '../view_model/services/authentication.dart';
+import '../view_model/services/firebase_abstract.dart';
 import '../view_model/services/firestore.dart';
 
 class Register extends StatefulWidget {
@@ -198,21 +199,25 @@ class _RegisterState extends State<Register> {
                     Message.flushBarErrorMessage(
                         context, "Password must be at least 6 digits");
                   } else {
-                    // registering user with email and password
-                    await Auth().createUserWithEmailAndPassword(
-                        context,
-                        _emailController.text.toLowerCase().trim(),
-                        _passwordController.text.trim());
+                    try {
+                      // registering user with email and password
+                      await Auth().createUserWithEmailAndPassword(
+                          context,
+                          _emailController.text.toLowerCase().trim(),
+                          _passwordController.text.trim());
 
-                    // saving the data onto cloud firestore database
-                    CloudStore.registerUser(
-                        Auth().currentUser?.uid,
-                        _nameController.text,
-                        _emailController.text,
-                        _initialAge.toInt());
+                      // saving the data onto cloud firestore database
+                      FirebaseBase obj = CloudStore();
+                      obj.registerUser(
+                          Auth().currentUser?.uid,
+                          _nameController.text,
+                          _emailController.text,
+                          _initialAge.toInt());
 
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
+                      Navigator.pop(context);
+                    } catch (e) {
+                      Message.flushBarErrorMessage(context, e.toString());
+                    }
                   }
                 },
               ),

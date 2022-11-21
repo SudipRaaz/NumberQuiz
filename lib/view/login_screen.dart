@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
-import 'package:smile_quiz/view_model/services/auth.dart';
+import 'package:smile_quiz/view_model/services/authentication.dart';
 
 import '../resources/components/button.dart';
 

@@ -4,4 +4,5 @@ class RoutesName {
   static const String quizPage = "quiz_page";
   static const String splash_Screen = "splash_screen";
   static const String register = "register_screen";
+  static const String leadership_board = "Leadership_board";
 }

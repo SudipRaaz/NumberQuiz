@@ -7,6 +7,7 @@ import 'package:smile_quiz/view/splash_screen.dart';
 import 'package:smile_quiz/view/summary.dart';
 
 import '../../view/dashboard.dart';
+import '../../view/leadershipScreen.dart';
 import '../../view/quizPage.dart';
 
 class Routes {
@@ -24,15 +25,13 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => Dashboard());
 
-      case RoutesName.quizPage:
-        return MaterialPageRoute(
-            builder: (BuildContext context) => QuizPage(
-                  timeAvailable: arg,
-                ));
-
       case RoutesName.splash_Screen:
         return MaterialPageRoute(
             builder: (BuildContext context) => Splash_Screen());
+
+      case RoutesName.leadership_board:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => LeaderShipBoard());
 
       default:
         return MaterialPageRoute(builder: (_) {

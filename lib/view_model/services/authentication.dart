@@ -39,24 +39,4 @@ class Auth extends Authenticate {
   Future signOut() async {
     await _firebaseAuth.signOut();
   }
-
-  void setLocalUserToken(token) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("token", '$token');
-    log(token.toString(), name: "token value in auth");
-    print("token saved ");
-  }
-
-  getUserToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var token = await pref.getString("token");
-
-    log(token.toString(), name: "token received in auth page");
-    return token.toString();
-  }
-
-  void removeToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.remove('token');
-  }
 }

@@ -22,7 +22,7 @@ class Message {
           Icons.error_rounded,
           color: Colors.white,
         ),
-      )..show(context),
+      ),
     );
   }
 }

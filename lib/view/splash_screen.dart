@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:smile_quiz/view/dashboard.dart';
 import 'package:smile_quiz/view/login_screen.dart';
-import 'package:smile_quiz/view_model/services/auth.dart';
+import 'package:smile_quiz/view_model/services/authentication.dart';
 
 class Splash_Screen extends StatefulWidget {
   Splash_Screen({super.key});
@@ -28,9 +28,9 @@ class _Splash_ScreenState extends State<Splash_Screen> {
   @override
   void initState() {
     var token = Auth().currentUser?.uid;
-    Auth().setLocalUserToken(token);
-    Auth().getUserToken();
-    log(token.toString(), name: "sending token value");
+    log(Auth().currentUser.toString(), name: "User Authentication : ");
+
+    // log(token.toString(), name: "sending token value");
     getUsertoken();
   }
 
