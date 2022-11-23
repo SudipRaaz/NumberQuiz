@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
+import 'package:smile_quiz/view/help.dart';
 import 'package:smile_quiz/view/login_screen.dart';
 import 'package:smile_quiz/view/register_screen.dart';
 import 'package:smile_quiz/view/splash_screen.dart';
@@ -32,6 +33,10 @@ class Routes {
       case RoutesName.leadership_board:
         return MaterialPageRoute(
             builder: (BuildContext context) => LeaderShipBoard());
+
+      case RoutesName.help_Screen:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const HelpScreen());
 
       default:
         return MaterialPageRoute(builder: (_) {

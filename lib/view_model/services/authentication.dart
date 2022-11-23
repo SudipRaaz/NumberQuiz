@@ -6,6 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 
+import 'firebase_abstract.dart';
+import 'firestore.dart';
+
 class Auth extends Authenticate {
   final _firebaseAuth = FirebaseAuth.instance;
 
@@ -14,11 +17,14 @@ class Auth extends Authenticate {
   Stream<User?> get authStateChange => _firebaseAuth.idTokenChanges();
 
   @override
-  Future createUserWithEmailAndPassword(
-      BuildContext context, String email, String password) async {
+  Future createUserWithEmailAndPassword(BuildContext context, String email,
+      String password, String name, int age) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+
+      FirebaseBase obj = CloudStore();
+      obj.registerUser(Auth().currentUser?.uid, name, email, age);
     } on FirebaseAuthException catch (error) {
       Message.flutterToast(context, error.message.toString());
     } catch (error) {

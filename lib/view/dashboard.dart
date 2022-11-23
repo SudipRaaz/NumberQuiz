@@ -22,8 +22,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final double _buttonGap = 8; // widget spacing gap
   var _quizMode = false; // quiz mode selection (hard or easy)
-  final bool _isVerified =
-      Auth().currentUser!.emailVerified; // is user's email verified or not
+  final bool _isVerified = Auth().currentUser!.emailVerified;
+
+  List _scoreData = []; // is user's email verified or not
 
   @override
   void initState() {
@@ -37,6 +38,11 @@ class _DashboardState extends State<Dashboard> {
     print("email verfication sent");
     Auth().signOut();
   }
+
+  Stream _userStream = FirebaseFirestore.instance
+      .collection("Users")
+      .doc(Auth()!.currentUser!.uid)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +69,18 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
-      drawer: FutureBuilder<User?>(
-          future: obj.readUserData(),
+      drawer: StreamBuilder(
+          stream: _userStream,
           builder: (context, snapshot) {
+            _scoreData = [];
             if (snapshot.hasData) {
-              final user = snapshot!.data;
+              var data = snapshot!.data;
+              _scoreData.add(data);
+
+              log(_scoreData.toString(), name: "score doc snapshot");
+              log(data['TotalScore'].toString(), name: "score doc snapshot");
+              // log(_scoreData.toString(), name: "score doc snapshot");
+
               // get the snapshot data of user
               return Drawer(
                 // Add a ListView to the drawer. This ensures the user can scroll
@@ -77,7 +90,7 @@ class _DashboardState extends State<Dashboard> {
                     // Important: Remove any padding from the ListView.
                     children: [
                       Container(
-                          height: height * 0.35,
+                          height: height * 0.38,
                           decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
@@ -123,7 +136,7 @@ class _DashboardState extends State<Dashboard> {
                                       top: 15.0,
                                     ),
                                     child: Text(
-                                      "${user?.name}",
+                                      "${data['name']}",
                                       style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
@@ -181,10 +194,30 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                       ListTile(
-                        title: Text(
-                          'Total Score:  ${user?.totalScore}',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.green),
+                        title: Row(
+                          children: [
+                            const Text(
+                              'Total Score:    ',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            Container(
+                              height: 25,
+                              width: 25,
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/pictures/star.png'))),
+                            ),
+                            Text(
+                              '  ${data['TotalScore']}',
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ],
                         ),
                         onTap: () {
                           Navigator.pop(context);
@@ -392,7 +425,9 @@ class _DashboardState extends State<Dashboard> {
                     TextButton(
                         style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(13)),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, RoutesName.help_Screen);
+                        },
                         child: const Text(
                           "Help",
                           style: TextStyle(fontSize: 25, color: Colors.white),

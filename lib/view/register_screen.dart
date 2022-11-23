@@ -207,15 +207,11 @@ class _RegisterState extends State<Register> {
                       await Auth().createUserWithEmailAndPassword(
                           context,
                           _emailController.text.toLowerCase().trim(),
-                          _passwordController.text.trim());
+                          _passwordController.text.trim(),
+                          _nameController.text.trim(),
+                          _initialAge.toInt());
 
                       // saving the data onto cloud firestore database
-                      FirebaseBase obj = CloudStore();
-                      obj.registerUser(
-                          Auth().currentUser?.uid,
-                          _nameController.text,
-                          _emailController.text,
-                          _initialAge.toInt());
 
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);

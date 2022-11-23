@@ -8,6 +8,7 @@ import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:validators/validators.dart';
 
 import '../resources/components/button.dart';
 
@@ -140,7 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Buttons(
               text: "Login",
               onPress: () {
-                if (_emailController.text.isEmpty) {
+                if (_emailController.text.isEmpty ||
+                    !isEmail(_emailController.text)) {
                   Message.flushBarErrorMessage(
                       context, "Enter a valid Email address");
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/model/game_summary_model.dart';
+import 'package:smile_quiz/resources/textStyle.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
 
 import '../model/user.dart';
@@ -20,15 +21,23 @@ class QuizSummary extends StatefulWidget {
 }
 
 class _QuizSummaryState extends State<QuizSummary> {
-  late final String _gameModeString = widget.gameMode ? "Hard" : "Easy";
-  late int _totalScore;
+  late final String _gameModeString =
+      widget.gameMode ? "Hard" : "Easy"; // game mode from bool to string
+  late final int _scored = widget.score; // score secured by player
+  late final int _bonusScore =
+      widget.gameMode ? 2 : 0; // bonus score for hard mode player
+
+  // widget spacing constant value
+  final double _spacing = 10;
 
   @override
   void initState() {
     FirebaseBase obj = CloudStore();
 
     obj.uploadToDatabase(
-        DateTime.now().toString(), widget.score.toString(), _gameModeString);
+        DateTime.now().toString(),
+        widget.gameMode ? {_scored + 2}.toString() : {_scored}.toString(),
+        _gameModeString);
 
     super.initState();
   }
@@ -48,6 +57,7 @@ class _QuizSummaryState extends State<QuizSummary> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
         body: FutureBuilder(
       future: readUserData(),
@@ -55,16 +65,32 @@ class _QuizSummaryState extends State<QuizSummary> {
         if (snapshot.hasData) {
           // if snapshot has data
           final user = snapshot.data; // get the snapshot data of user
-
-          /* retrive the current total score from user!.totalscore! 
-          and add the current score to existing score  */
+          // creating the obj of base abstract class
           FirebaseBase obj = CloudStore();
-          obj.updateTotalScore(user!.totalScore! + widget.score);
-          return SafeArea(
+
+          print(_scored);
+          log(_bonusScore.toString() + '   ' + user!.totalScore!.toString(),
+              name: 'bonus score');
+          // updating the total score to remote database adding current score and bonus points to the existing player total score
+          obj.updateTotalScore(user!.totalScore! + _scored + _bonusScore);
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            // Below is the code for Linear Gradient.
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.purple,
+                  Color.fromARGB(255, 33, 82, 243),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
             child: Column(
               children: [
                 SizedBox(
-                  height: height / 16,
+                  height: height * 0.13,
                 ),
                 Stack(children: [
                   CircleAvatar(
@@ -82,13 +108,86 @@ class _QuizSummaryState extends State<QuizSummary> {
                   ),
                 ]),
                 SizedBox(
-                  height: height / 15,
+                  height: height * 0.03,
                 ),
-                const Center(child: Text("Quiz Summary")),
-                Text("score : ${widget.score}"),
-                Text("date : " + DateTime.now().toString()),
-                Text("game mode : " + _gameModeString.toString()),
-                Text({user!.totalScore! + widget.score}.toString()),
+                Center(
+                    child: Text(
+                  "Quiz Summary",
+                  style: AppTextStyle.heading_h1,
+                )),
+                SizedBox(
+                  height: height * 0.06,
+                ),
+                Container(
+                  // color: Colors.amber,
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 2, color: Colors.white),
+                      borderRadius: BorderRadius.circular(15)),
+                  height: height * 0.18,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: _spacing,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Score : $_scored ",
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                height: 25,
+                                width: 25,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/pictures/star.png"))),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: _spacing,
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Bonus : ",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                            widget.gameMode
+                                ? Text(
+                                    _bonusScore.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  )
+                                : Text(
+                                    _bonusScore.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: _spacing,
+                        ),
+                        Text(
+                          "Game Mode : $_gameModeString",
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           );

@@ -20,6 +20,7 @@ class LeaderShipBoard extends StatelessWidget {
         appBar: AppBar(
           title: const Text("LeaderShip"),
           centerTitle: true,
+          backgroundColor: AppColors.appBar_theme,
         ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -68,14 +69,26 @@ class LeaderShipBoard extends StatelessWidget {
                       Expanded(
                           child: ListView.builder(
                         itemBuilder: (context, index) {
-                          // rankingList = [];
-
                           return ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: AppColors.app_theme,
                                 child: Text("${index + 1}"),
                               ),
-                              title: Text(rankingList[index]['name']),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(rankingList[index]['name']),
+                                  Container(
+                                    height: 25,
+                                    width: 25,
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/pictures/star.png'))),
+                                  )
+                                ],
+                              ),
                               trailing: Text(
                                 rankingList[index]['TotalScore'].toString(),
                                 style: AppTextStyle.normal,
