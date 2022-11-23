@@ -40,4 +40,16 @@ class CloudStore extends FirebaseBase {
     final user = {'TotalScore': totalScored};
     await doc.update(user);
   }
+
+  @override
+  Future<User?> readUserData() async {
+    final doc = FirebaseFirestore.instance
+        .collection("Users")
+        .doc(Auth().currentUser!.uid);
+    final snapshot = await doc.get();
+    if (snapshot.exists) {
+      return User.fromJson(snapshot.data()!);
+    }
+    return null;
+  }
 }

@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smile_quiz/model/quiz_model.dart';
+import 'package:smile_quiz/resources/appcolors.dart';
 import 'package:smile_quiz/resources/constants.dart';
+import 'package:smile_quiz/resources/textStyle.dart';
 import 'package:smile_quiz/utilities/functions.dart';
 import 'package:smile_quiz/view/summary.dart';
 import 'package:smile_quiz/view_model/Question_viewModel.dart';
@@ -148,6 +150,7 @@ class _QuizPageState extends State<QuizPage> {
       onWillPop: () => _onwillpop(),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: AppColors.appBar_theme,
           leading: IconButton(
               onPressed: () {
                 // cancel timer and exit quiz page
@@ -262,16 +265,28 @@ class _QuizPageState extends State<QuizPage> {
                         Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.appBar_theme,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15))),
                               onPressed: () {
+                                _cancelTimer();
                                 _resetTimer();
                                 _startTimer();
                                 getQuestion();
                               },
-                              child: const Text("Skip")),
+                              child: Text(
+                                "Skip",
+                                style: AppTextStyle.normal,
+                              )),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(right: 15.0),
                           child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.appBar_theme,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15))),
                               onPressed: () {
                                 if (!answerSelected) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -287,8 +302,14 @@ class _QuizPageState extends State<QuizPage> {
                                 getQuestion();
                               },
                               child: endOfQuiz
-                                  ? const Text("Submit")
-                                  : const Text("Next")),
+                                  ? Text(
+                                      "Submit",
+                                      style: AppTextStyle.normal,
+                                    )
+                                  : Text(
+                                      "Next",
+                                      style: AppTextStyle.normal,
+                                    )),
                         ),
                       ],
                     ),

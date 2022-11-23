@@ -36,7 +36,6 @@ class _RegisterState extends State<Register> {
   double _initialAge = 10;
 
   @override
-  // TODO: object disposal
   void dispose() {
     super.dispose();
     _obsecureText.dispose();
@@ -55,7 +54,11 @@ class _RegisterState extends State<Register> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Register'),
+        centerTitle: true,
+        backgroundColor: AppColors.appBar_theme,
+      ),
       body: ListView(
         children: [
           Column(
@@ -214,6 +217,7 @@ class _RegisterState extends State<Register> {
                           _emailController.text,
                           _initialAge.toInt());
 
+                      // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                     } catch (e) {
                       Message.flushBarErrorMessage(context, e.toString());

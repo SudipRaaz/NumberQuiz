@@ -8,4 +8,6 @@ abstract class Authenticate {
       BuildContext context, String email, String password);
 
   Future signOut();
+
+  passwordReset(BuildContext context, String email);
 }

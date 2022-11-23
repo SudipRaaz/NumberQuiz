@@ -38,6 +38,8 @@ dependencies:
     
   http: ^0.13.5  # protocol
   another_flushbar: ^1.12.29  # message carrier
+  top_snackbar_flutter: ^3.0.0 # message carrier
+  fluttertoast: ^8.1.1  # message carrier
   validators: ^3.0.0  # regex validation checker
   provider: ^6.0.4  # state mangement
   shared_preferences: ^2.0.15  # local storage

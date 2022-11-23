@@ -6,51 +6,32 @@ class Buttons extends StatelessWidget {
 
   bool loading = false;
   final VoidCallback onPress;
-  Buttons({super.key, required this.text, required this.onPress});
+  Buttons({
+    super.key,
+    required this.text,
+    required this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onPress,
+      onTap: () {
+        loading = true;
+        return onPress();
+      },
       child: Container(
         decoration: BoxDecoration(
             color: AppColors.login_buttonColor,
             borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 18),
-          ),
+          child: loading
+              ? CircularProgressIndicator()
+              : Text(
+                  text,
+                  style: const TextStyle(fontSize: 18),
+                ),
         ),
-      ),
-    );
-  }
-
-  static Widget gradientButton(String lable, Function VoidCallback) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
-      child: Stack(
-        children: [
-          Positioned.fill(
-              child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              Color.fromARGB(255, 4, 135, 243),
-              Colors.blue.shade300,
-              Colors.blue.shade200
-            ], end: Alignment.topCenter, begin: Alignment.bottomCenter)),
-          )),
-          TextButton(
-              style: TextButton.styleFrom(padding: EdgeInsets.all(20)),
-              onPressed: () {
-                VoidCallback;
-              },
-              child: Text(
-                "$lable",
-                style: TextStyle(fontSize: 25, color: Colors.white),
-              ))
-        ],
       ),
     );
   }

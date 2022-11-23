@@ -1,7 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Message {
   static void flushBarErrorMessage(BuildContext context, String message) {
@@ -22,7 +22,11 @@ class Message {
           Icons.error_rounded,
           color: Colors.white,
         ),
-      ),
+      )..show(context),
     );
+  }
+
+  static void flutterToast(BuildContext context, String message) {
+    Fluttertoast.showToast(msg: message, gravity: ToastGravity.TOP);
   }
 }

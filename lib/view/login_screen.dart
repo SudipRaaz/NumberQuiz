@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:smile_quiz/resources/appcolors.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
+import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../resources/components/button.dart';
 
@@ -13,19 +19,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  ValueNotifier<bool> _obsecureText = ValueNotifier(true);
+  final ValueNotifier<bool> _obsecureText = ValueNotifier(true);
 
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
 
-  FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _obsecureText.dispose();
     _emailController.dispose();
@@ -40,8 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    Authenticate obj = Auth();
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Login'),
+        centerTitle: true,
+        backgroundColor: AppColors.appBar_theme,
+      ),
       body: ListView(children: [
         Column(
           children: [
@@ -95,15 +105,46 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
                 }),
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("Forgot Password?"),
+                  TextButton(
+                      onPressed: () {
+                        if (_emailController.text.isEmpty) {
+                          // if email is empty display this message
+                          Message.flutterToast(
+                              context, 'Enter Email to reset Password');
+                        } else {
+                          try {
+                            // send request for password reset to authentication page
+                            obj.passwordReset(
+                                context, _emailController.text.trim());
+                          } catch (e) {
+                            // catch any exception or errors
+                            Message.flutterToast(context, e.toString());
+                          }
+                        }
+                      },
+                      child: const Text('Reset Password'))
+                ],
+              ),
+            ),
+            // 9% gap space occupied
             SizedBox(
               height: height * .09,
             ),
+            // widget button
             Buttons(
               text: "Login",
               onPress: () {
                 if (_emailController.text.isEmpty) {
                   Message.flushBarErrorMessage(
                       context, "Enter a valid Email address");
+
+                  log("enter email", name: "email empty");
                 } else if (_passwordController.text.length < 6) {
                   Message.flushBarErrorMessage(
                       context, "Password must be at least 6 digits");
@@ -118,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Don't have an account? "),
+                const Text("Don't have an account? "),
                 TextButton(
                     onPressed: () {
                       Navigator.pushNamed(context, RoutesName.register);

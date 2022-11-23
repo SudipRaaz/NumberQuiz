@@ -1,17 +1,16 @@
 import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/resources/appcolors.dart';
 import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/resources/textStyle.dart';
-import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/view/quizPage.dart';
-import 'package:smile_quiz/view/summary.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
 
-import '../resources/components/button.dart';
+import '../model/user.dart';
 import '../utilities/route/routes_name.dart';
+import '../view_model/services/firebase_abstract.dart';
+import '../view_model/services/firestore.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -21,84 +20,259 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  double buttonGap = 8;
+  final double _buttonGap = 8; // widget spacing gap
+  var _quizMode = false; // quiz mode selection (hard or easy)
+  final bool _isVerified =
+      Auth().currentUser!.emailVerified; // is user's email verified or not
 
   @override
   void initState() {
-    var token = Auth().currentUser?.uid;
     log(Auth().currentUser.toString(), name: "User Authentication : ");
     super.initState();
   }
 
-  var _quizMode = false;
+  Future sendEmailVerfication() async {
+    await Auth().currentUser!.sendEmailVerification();
+
+    print("email verfication sent");
+    Auth().signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    FirebaseBase obj = CloudStore();
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.appBar_theme,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.app_background,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50))),
+                onPressed: () {
+                  Auth().signOut();
+                },
+                child: const Text(
+                  "Sign Out",
+                  style: TextStyle(color: Colors.black),
+                )),
+          ),
+        ],
+      ),
+      drawer: FutureBuilder<User?>(
+          future: obj.readUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final user = snapshot!.data;
+              // get the snapshot data of user
+              return Drawer(
+                // Add a ListView to the drawer. This ensures the user can scroll
+                // through the options in the drawer if there isn't enough vertical
+                // space to fit everything.
+                child: Column(
+                    // Important: Remove any padding from the ListView.
+                    children: [
+                      Container(
+                          height: height * 0.35,
+                          decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                Color.fromARGB(255, 21, 43, 247),
+                                Color.fromARGB(255, 87, 104, 255),
+                                Color.fromARGB(255, 147, 157, 251),
+                                Color.fromARGB(255, 255, 255, 255),
+                                Color.fromARGB(255, 255, 255, 255),
+                              ])),
+                          child: Center(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 50.0,
+                                        backgroundImage: NetworkImage(
+                                          Auth().currentUser!.photoURL ??
+                                              "https://th.bing.com/th/id/OIP.7jKcNNIq8rQLPZqRym9qvwHaIN?pid=ImgDet&rs=1",
+                                        ),
+                                      ),
+                                      _isVerified
+                                          ? const Positioned(
+                                              right: 0,
+                                              child: CircleAvatar(
+                                                radius: 12,
+                                                backgroundColor: Colors.white,
+                                                child: Icon(
+                                                  Icons.verified,
+                                                  color: Colors.blue,
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                    ),
+                                    child: Text(
+                                      "${user?.name}",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ]),
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  " Quiz \nMode      ",
+                                  style: AppTextStyle.normal,
+                                ),
+                                Text(
+                                  "Easy",
+                                  style: AppTextStyle.normal,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Transform.scale(
+                                    scale: 1.3,
+                                    child: Switch(
+                                      value: _quizMode,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _quizMode = !_quizMode;
+                                        });
+                                      },
+                                      activeColor: const Color.fromARGB(
+                                          255, 255, 62, 48),
+                                      activeTrackColor: const Color.fromARGB(
+                                          255, 255, 197, 203),
+                                      inactiveTrackColor: const Color.fromARGB(
+                                          255, 172, 255, 203),
+                                      inactiveThumbColor: const Color.fromARGB(
+                                          255, 54, 255, 60),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "Hard",
+                                  style: AppTextStyle.normal,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        title: Text(
+                          'Total Score:  ${user?.totalScore}',
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.green),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        dense: true,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Email Verification :',
+                                  style: AppTextStyle.normal,
+                                ),
+                                !_isVerified
+                                    ? Center(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.app_background,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50))),
+                                            onPressed: () {
+                                              sendEmailVerfication();
+                                            },
+                                            child: const Text(
+                                              "Send Verfication  Email",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            )),
+                                      )
+                                    : Row(
+                                        children: const [
+                                          Text(
+                                            "Verified",
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                          Icon(
+                                            Icons.verified,
+                                            color: Colors.blue,
+                                          )
+                                        ],
+                                      ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const Spacer(
+                        flex: 1,
+                      ),
+                      ListTile(
+                        title: Column(
+                          children: [
+                            Text("Last Signed In"),
+                            Text(Auth()
+                                .currentUser!
+                                .metadata
+                                .lastSignInTime
+                                .toString()),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ]),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
       body: Container(
           width: double.infinity,
           height: double.infinity,
           color: AppColors.app_background,
           child: SafeArea(
             child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          " Quiz \nMode   ",
-                          style: AppTextStyle.normal,
-                        ),
-                        Text(
-                          "Easy",
-                          style: AppTextStyle.normal,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Transform.scale(
-                            scale: 1.3,
-                            child: Switch(
-                              value: _quizMode,
-                              onChanged: (value) {
-                                setState(() {
-                                  _quizMode = !_quizMode;
-                                });
-                              },
-                              activeColor: Color.fromARGB(255, 255, 62, 48),
-                              activeTrackColor:
-                                  Color.fromARGB(255, 255, 197, 203),
-                              inactiveTrackColor:
-                                  Color.fromARGB(255, 172, 255, 203),
-                              inactiveThumbColor:
-                                  Color.fromARGB(255, 54, 255, 60),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "Hard",
-                          style: AppTextStyle.normal,
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 80, 97, 246),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50))),
-                        onPressed: () {
-                          Auth().signOut();
-                        },
-                        child: const Text("Sign Out")),
-                  ],
-                ),
-              ),
               const Spacer(
                 flex: 1,
               ),
@@ -131,10 +305,6 @@ class _DashboardState extends State<Dashboard> {
                         style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(13)),
                         onPressed: () {
-                          // Navigator.pushNamed(context, RoutesName.quizPage,
-                          //     arguments: _quizMode
-                          //         ? AppConstant.hardModeTimer
-                          //         : AppConstant.easyModeTimer);
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return QuizPage(
@@ -153,7 +323,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               SizedBox(
-                height: buttonGap,
+                height: _buttonGap,
               ),
 
               // leadership board button created and function assigned
@@ -194,7 +364,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               SizedBox(
-                height: buttonGap,
+                height: _buttonGap,
               ),
               // text help button and function assigned
               ClipRRect(
@@ -231,7 +401,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
               SizedBox(
-                height: buttonGap,
+                height: _buttonGap,
               ),
             ]),
           )),
