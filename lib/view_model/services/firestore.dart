@@ -52,4 +52,12 @@ class CloudStore extends FirebaseBase {
     }
     return null;
   }
+
+  @override
+  Future sendEmailVerfication() async {
+    await Auth().currentUser!.sendEmailVerification();
+
+    print("email verfication sent");
+    Auth().signOut();
+  }
 }

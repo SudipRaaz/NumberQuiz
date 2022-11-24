@@ -10,4 +10,7 @@ abstract class FirebaseBase {
 
   // read user data from database
   readUserData();
+
+  // send the verification email
+  Future sendEmailVerfication();
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,20 +7,18 @@ import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/resources/textStyle.dart';
 import 'package:smile_quiz/view/quizPage.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
-
-import '../model/user.dart';
 import '../utilities/route/routes_name.dart';
 import '../view_model/services/firebase_abstract.dart';
 import '../view_model/services/firestore.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard({super.key});
+  const Dashboard({super.key});
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   final double _buttonGap = 8; // widget spacing gap
   var _quizMode = false; // quiz mode selection (hard or easy)
   final bool _isVerified = Auth().currentUser!.emailVerified;
@@ -29,19 +28,64 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     log(Auth().currentUser.toString(), name: "User Authentication : ");
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
-  Future sendEmailVerfication() async {
-    await Auth().currentUser!.sendEmailVerification();
-
-    print("email verfication sent");
-    Auth().signOut();
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
-  Stream _userStream = FirebaseFirestore.instance
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        _startTimer();
+        debugPrint("application paused");
+        break;
+      case AppLifecycleState.resumed:
+        _cancelTimer();
+        _resetTimer(AppConstant.sessionTimer);
+        debugPrint("application resumed");
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  Timer? _timer;
+  int timeLeft = AppConstant.sessionTimer;
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      // if this page is still mounted to widget tree then proceed
+      if (timeLeft > 0) {
+        timeLeft--;
+        debugPrint(timeLeft.toString());
+      } else {
+        _cancelTimer();
+        alertDialogSession(context);
+      }
+    });
+  }
+
+  // reset timer
+  void _resetTimer(int timeAvailable) {
+    timeLeft = timeAvailable;
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+  }
+
+  final Stream _userStream = FirebaseFirestore.instance
       .collection("Users")
-      .doc(Auth()!.currentUser!.uid)
+      .doc(Auth().currentUser!.uid)
       .snapshots();
 
   @override
@@ -74,12 +118,8 @@ class _DashboardState extends State<Dashboard> {
           builder: (context, snapshot) {
             _scoreData = [];
             if (snapshot.hasData) {
-              var data = snapshot!.data;
+              var data = snapshot.data;
               _scoreData.add(data);
-
-              log(_scoreData.toString(), name: "score doc snapshot");
-              log(data['TotalScore'].toString(), name: "score doc snapshot");
-              // log(_scoreData.toString(), name: "score doc snapshot");
 
               // get the snapshot data of user
               return Drawer(
@@ -112,7 +152,7 @@ class _DashboardState extends State<Dashboard> {
                                       CircleAvatar(
                                         radius: 50.0,
                                         backgroundImage: NetworkImage(
-                                          Auth().currentUser!.photoURL ??
+                                          Auth().currentUser?.photoURL ??
                                               "https://th.bing.com/th/id/OIP.7jKcNNIq8rQLPZqRym9qvwHaIN?pid=ImgDet&rs=1",
                                         ),
                                       ),
@@ -246,7 +286,7 @@ class _DashboardState extends State<Dashboard> {
                                                         BorderRadius.circular(
                                                             50))),
                                             onPressed: () {
-                                              sendEmailVerfication();
+                                              obj.sendEmailVerfication();
                                             },
                                             child: const Text(
                                               "Send Verfication  Email",
@@ -280,7 +320,7 @@ class _DashboardState extends State<Dashboard> {
                       ListTile(
                         title: Column(
                           children: [
-                            Text("Last Signed In"),
+                            const Text("Last Signed In"),
                             Text(Auth()
                                 .currentUser!
                                 .metadata
@@ -306,6 +346,17 @@ class _DashboardState extends State<Dashboard> {
           color: AppColors.app_background,
           child: SafeArea(
             child: Column(children: [
+              const Spacer(
+                flex: 1,
+              ),
+
+              Container(
+                height: 300,
+                width: 300,
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/pictures/getSmarter.png'))),
+              ),
               const Spacer(
                 flex: 1,
               ),
@@ -396,12 +447,14 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
               ),
+              // spacing
               SizedBox(
                 height: _buttonGap,
               ),
               // text help button and function assigned
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
+                // staking widget on top of each other
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -412,12 +465,14 @@ class _DashboardState extends State<Dashboard> {
                             color: const Color.fromARGB(255, 250, 168, 168),
                             style: BorderStyle.solid,
                           ),
+                          // gradient type and gradient colors to use
                           gradient: const LinearGradient(
                               colors: [
                                 Color.fromARGB(255, 61, 41, 215),
                                 Color.fromARGB(255, 83, 119, 248),
                                 Color.fromARGB(255, 176, 239, 255)
                               ],
+                              // gradient styling
                               end: Alignment.topCenter,
                               begin: Alignment.bottomCenter)),
                     )),
@@ -426,6 +481,7 @@ class _DashboardState extends State<Dashboard> {
                         style: TextButton.styleFrom(
                             padding: const EdgeInsets.all(13)),
                         onPressed: () {
+                          // routing to help page screen
                           Navigator.pushNamed(context, RoutesName.help_Screen);
                         },
                         child: const Text(
@@ -441,5 +497,25 @@ class _DashboardState extends State<Dashboard> {
             ]),
           )),
     );
+  }
+
+  // alert dialog display widget
+  Future<dynamic> alertDialogSession(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false, // disable dialog dismiss on outside touch
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: const Color.fromARGB(255, 246, 199, 60),
+              title: const Text('Session Expired'),
+              content: const Text('Please, Login again'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Auth().signOut();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'))
+              ],
+            ));
   }
 }

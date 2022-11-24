@@ -6,6 +6,7 @@ import 'package:smile_quiz/view/login_screen.dart';
 import 'package:smile_quiz/view/register_screen.dart';
 import 'package:smile_quiz/view/splash_screen.dart';
 import 'package:smile_quiz/view/summary.dart';
+import 'package:smile_quiz/view/termsAndConditions.dart';
 
 import '../../view/dashboard.dart';
 import '../../view/leadershipScreen.dart';
@@ -37,6 +38,9 @@ class Routes {
       case RoutesName.help_Screen:
         return MaterialPageRoute(
             builder: (BuildContext context) => const HelpScreen());
+      case RoutesName.termsAndCondition:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const TermAndCondition());
 
       default:
         return MaterialPageRoute(builder: (_) {

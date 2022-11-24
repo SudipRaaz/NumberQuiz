@@ -10,7 +10,7 @@ import 'package:smile_quiz/model/quiz_model.dart';
 import 'package:smile_quiz/resources/appcolors.dart';
 import 'package:smile_quiz/resources/constants.dart';
 import 'package:smile_quiz/resources/textStyle.dart';
-import 'package:smile_quiz/utilities/functions.dart';
+import 'package:smile_quiz/utilities/Method/optionsGenerator.dart';
 import 'package:smile_quiz/view/summary.dart';
 import 'package:smile_quiz/view_model/Question_viewModel.dart';
 

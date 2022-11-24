@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:smile_quiz/view_model/services/authentication.dart';
 
 import '../resources/appcolors.dart';
 import '../resources/textStyle.dart';
@@ -70,6 +71,11 @@ class LeaderShipBoard extends StatelessWidget {
                           child: ListView.builder(
                         itemBuilder: (context, index) {
                           return ListTile(
+                              selectedTileColor: rankingList[index]['uid'] ==
+                                      Auth().currentUser!.uid
+                                  ? AppColors.leadershipSelectedTile
+                                  : null,
+                              selected: true,
                               leading: CircleAvatar(
                                 backgroundColor: AppColors.app_theme,
                                 child: Text("${index + 1}"),
@@ -78,7 +84,10 @@ class LeaderShipBoard extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(rankingList[index]['name']),
+                                  Text(
+                                    rankingList[index]['name'],
+                                    style: AppTextStyle.leadershipBoard,
+                                  ),
                                   Container(
                                     height: 25,
                                     width: 25,
@@ -91,7 +100,7 @@ class LeaderShipBoard extends StatelessWidget {
                               ),
                               trailing: Text(
                                 rankingList[index]['TotalScore'].toString(),
-                                style: AppTextStyle.normal,
+                                style: AppTextStyle.leadershipBoard,
                               ));
                         },
                         itemCount: rankingList.length,

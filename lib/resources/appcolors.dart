@@ -14,4 +14,7 @@ class AppColors {
 
   // appbar color
   static Color appBar_theme = const Color.fromARGB(255, 80, 97, 246);
+  // leadership page selected tile
+  static Color leadershipSelectedTile =
+      const Color.fromARGB(255, 158, 253, 120);
 }

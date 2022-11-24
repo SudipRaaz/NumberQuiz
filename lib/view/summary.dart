@@ -1,11 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smile_quiz/model/game_summary_model.dart';
 import 'package:smile_quiz/resources/textStyle.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
-
 import '../model/user.dart';
 import '../view_model/services/firebase_abstract.dart';
 import '../view_model/services/firestore.dart';
@@ -67,10 +63,6 @@ class _QuizSummaryState extends State<QuizSummary> {
           final user = snapshot.data; // get the snapshot data of user
           // creating the obj of base abstract class
           FirebaseBase obj = CloudStore();
-
-          print(_scored);
-          log(_bonusScore.toString() + '   ' + user!.totalScore!.toString(),
-              name: 'bonus score');
           // updating the total score to remote database adding current score and bonus points to the existing player total score
           obj.updateTotalScore(user!.totalScore! + _scored + _bonusScore);
           return Container(

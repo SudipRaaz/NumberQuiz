@@ -1,16 +1,10 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/resources/appcolors.dart';
+import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:validators/validators.dart';
-
 import '../resources/components/button.dart';
 import '../utilities/message.dart';
 import '../view_model/services/authentication.dart';
-import '../view_model/services/firebase_abstract.dart';
-import '../view_model/services/firestore.dart';
 
 class Register extends StatefulWidget {
   Register({super.key});
@@ -33,7 +27,9 @@ class _RegisterState extends State<Register> {
   final FocusNode _passwordFocusNode = FocusNode();
 
   // initial age for registration
-  double _initialAge = 10;
+  double _initialAge = 18;
+  // check box default value
+  bool _checkBoxValue = false;
 
   @override
   void dispose() {
@@ -53,6 +49,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
@@ -124,17 +121,9 @@ class _RegisterState extends State<Register> {
                       // age slider picker
                       child: Slider(
                         value: _initialAge,
-                        min: 10.0, // min age allowed
+                        min: 18.0, // min age allowed
                         max: 60.0, // max age allowed
-                        divisions: 50,
-                        // on change started point
-                        onChangeStart: (double value) {
-                          print('Start value is ' + value.toString());
-                        },
-                        // on change end
-                        onChangeEnd: (double value) {
-                          print('Finish value is ' + value.toString());
-                        },
+                        divisions: 42, // number of divisions allowed
                         // updating age on slider change
                         onChanged: (double newValue) {
                           setState(() {
@@ -181,6 +170,26 @@ class _RegisterState extends State<Register> {
                       ),
                     );
                   }),
+
+              // agreement to term and conditions
+              Row(
+                children: [
+                  Checkbox(
+                      value: _checkBoxValue,
+                      onChanged: ((value) {
+                        setState(() {
+                          _checkBoxValue = !_checkBoxValue;
+                        });
+                      })),
+                  const Text('Agree to'),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, RoutesName.termsAndCondition);
+                      },
+                      child: const Text('Term and Conditions'))
+                ],
+              ),
               SizedBox(
                 height: height * .09,
               ),
@@ -191,6 +200,7 @@ class _RegisterState extends State<Register> {
                   if (_nameController.text.isEmpty) {
                     Message.flushBarErrorMessage(context, "Enter a valid Name");
                   }
+
                   // checking for email format and length
                   else if (_emailController.text.isEmpty ||
                       !isEmail(_emailController.text)) {
@@ -201,6 +211,9 @@ class _RegisterState extends State<Register> {
                   else if (_passwordController.text.length < 6) {
                     Message.flushBarErrorMessage(
                         context, "Password must be at least 6 digits");
+                  } else if (!_checkBoxValue) {
+                    Message.flushBarErrorMessage(
+                        context, "Accept to terms and conditions to proceed");
                   } else {
                     try {
                       // registering user with email and password
