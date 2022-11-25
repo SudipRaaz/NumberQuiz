@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smile_quiz/resources/appcolors.dart';
+import 'package:smile_quiz/resources/constants/appcolors.dart';
 
 class TermAndCondition extends StatelessWidget {
   const TermAndCondition({super.key});

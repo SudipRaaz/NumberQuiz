@@ -6,7 +6,13 @@ import 'package:smile_quiz/utilities/route/routes_name.dart';
 //developed on flutter version 3.3.4
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: "AIzaSyCf1ZbCl7hzOPOAqrmfrNxfmiFCtxplzkE",
+          appId: "1:993818877548:web:e946700f298c9d90c48249",
+          messagingSenderId: "G-0YLZTT5CVT",
+          projectId: "smilequiz"));
+
   runApp(const MyApp());
 }
 

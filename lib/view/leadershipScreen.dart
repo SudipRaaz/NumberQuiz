@@ -6,8 +6,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
 
-import '../resources/appcolors.dart';
-import '../resources/textStyle.dart';
+import '../resources/constants/appcolors.dart';
+import '../resources/constants/textStyle.dart';
 
 // ignore: must_be_immutable
 class LeaderShipBoard extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:smile_quiz/data/network/BaseApiServices.dart';
 import 'package:smile_quiz/data/network/NetworkApiService.dart';
-import 'package:smile_quiz/resources/app_url.dart';
+import 'package:smile_quiz/resources/constants/app_url.dart';
 
 import '../model/quiz_model.dart';
 

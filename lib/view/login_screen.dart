@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:smile_quiz/resources/appcolors.dart';
+import 'package:smile_quiz/resources/constants/appcolors.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:smile_quiz/view_model/services/Authentication_base.dart';

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smile_quiz/resources/textStyle.dart';
+import 'package:smile_quiz/resources/constants/textStyle.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
 import '../model/user.dart';
 import '../view_model/services/firebase_abstract.dart';
