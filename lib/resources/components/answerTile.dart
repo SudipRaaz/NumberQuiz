@@ -1,5 +1,7 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AnswerTile extends StatelessWidget {
   AnswerTile(
       {required this.answerColor,
@@ -50,8 +52,8 @@ class AnswerTile extends StatelessWidget {
                 ),
               ),
               Text(
-                "${answers}",
-                style: TextStyle(fontSize: 22),
+                "$answers",
+                style: const TextStyle(fontSize: 22),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),

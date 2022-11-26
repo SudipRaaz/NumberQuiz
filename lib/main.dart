@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:smile_quiz/utilities/route/routes.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: RoutesName.splash_Screen,
+      initialRoute: RoutesName.splashScreen,
       onGenerateRoute: Routes.generateRoutes,
     );
   }

@@ -17,9 +17,11 @@ import 'package:smile_quiz/view_model/Question_viewModel.dart';
 import '../repository/quiz_question.dart';
 import '../resources/components/answerTile.dart';
 
+// ignore: must_be_immutable
 class QuizPage extends StatefulWidget {
   QuizPage({required this.timeAvailable, required this.gameMode, super.key});
 
+  // ignore: prefer_typing_uninitialized_variables
   final timeAvailable;
   bool gameMode;
 
@@ -30,7 +32,8 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   Question_viewModel questionviewModel = Question_viewModel();
   Question? _quizGame;
-  Quiz_repository _quiz_repo = Quiz_repository();
+  // ignore: non_constant_identifier_names
+  final QuizRepository _quiz_repo = QuizRepository();
 
   bool _isLoaded = false;
   bool answerSelected = false;
@@ -39,10 +42,11 @@ class _QuizPageState extends State<QuizPage> {
   // constant values
   int questionIndex = 0;
   // accepts only static constant values
-  int totalQuestions = AppConstant.totalQuestions;
-  int totalScore = 0;
-  late double timeLeft;
-  late double maxTime;
+  int totalQuestions = AppConstant
+      .totalQuestions; // total number of question to ask in each game
+  int totalScore = 0; // player score tracker
+  late double timeLeft; // time remaining for user for each questions
+  late double maxTime; // max time available for each questions
 
   // timer
   Timer? _timer;
@@ -61,7 +65,7 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   void dispose() {
-    print("disposed");
+    debugPrint("disposed");
     _cancelTimer();
     super.dispose();
   }
@@ -98,7 +102,9 @@ class _QuizPageState extends State<QuizPage> {
       }
     } else {
       _cancelTimer();
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
+      // ignore: use_build_context_synchronously
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => QuizSummary(
                 score: totalScore,
@@ -127,7 +133,7 @@ class _QuizPageState extends State<QuizPage> {
         setState(() {
           if (timeLeft > 0) {
             timeLeft--;
-            print(timeLeft);
+            debugPrint(timeLeft.toString());
           } else {
             _cancelTimer();
             answerSelected = true;
@@ -212,7 +218,7 @@ class _QuizPageState extends State<QuizPage> {
                   // ************question displaying ***************
                   Expanded(
                     flex: 3,
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       child: InteractiveViewer(
                         child: Container(

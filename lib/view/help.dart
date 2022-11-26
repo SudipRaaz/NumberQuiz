@@ -8,7 +8,7 @@ class HelpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Help Page'),
+        title: const Text('Help Page'),
         centerTitle: true,
         backgroundColor: AppColors.appBar_theme,
       ),

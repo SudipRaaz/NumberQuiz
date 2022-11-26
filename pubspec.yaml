@@ -43,7 +43,6 @@ dependencies:
   fluttertoast: ^8.1.1  # message carrier
   validators: ^3.0.0  # regex validation checker
   provider: ^6.0.4  # state mangement
-  shared_preferences: ^2.0.15  # local storage
   font_awesome_flutter: ^10.2.1 #for google icons
 
 

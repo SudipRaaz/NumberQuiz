@@ -7,7 +7,7 @@ import '../utilities/message.dart';
 import '../view_model/services/authentication.dart';
 
 class Register extends StatefulWidget {
-  Register({super.key});
+  const Register({super.key});
 
   @override
   State<Register> createState() => _RegisterState();

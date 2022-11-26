@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../../model/game_summary_model.dart';
 import '../../model/user.dart';
 import 'authentication.dart';
@@ -57,7 +58,7 @@ class CloudStore extends FirebaseBase {
   Future sendEmailVerfication() async {
     await Auth().currentUser!.sendEmailVerification();
 
-    print("email verfication sent");
+    debugPrint("email verfication sent");
     Auth().signOut();
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:convert';
+// ignore: file_names
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -25,8 +25,8 @@ class NetworkApiService extends BaseApiServices {
   Future getPostApiResponse(String url, dynamic data) async {
     dynamic responseJson;
     try {
-      Response response =
-          await post(Uri.parse(url), body: data).timeout(Duration(seconds: 10));
+      Response response = await post(Uri.parse(url), body: data)
+          .timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {
       FetchDataException('No Internet Connection');

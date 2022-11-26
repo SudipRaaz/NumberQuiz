@@ -3,8 +3,9 @@ import 'package:smile_quiz/data/response/api_response.dart';
 import 'package:smile_quiz/model/quiz_model.dart';
 import 'package:smile_quiz/repository/quiz_question.dart';
 
+// ignore: camel_case_types
 class Question_viewModel with ChangeNotifier {
-  final _repository = Quiz_repository();
+  final _repository = QuizRepository();
 
   ApiResponse<Question> questionlist = ApiResponse.loading();
 

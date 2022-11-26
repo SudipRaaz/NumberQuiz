@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -44,7 +42,7 @@ class Auth extends Authenticate {
           gravity: ToastGravity.TOP,
           backgroundColor: Colors.redAccent);
     } catch (error) {
-      Message.flushBarErrorMessage(context, '${error}+ 5555');
+      Message.flushBarErrorMessage(context, '$error+ 5555');
     }
   }
 

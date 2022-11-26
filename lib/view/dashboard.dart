@@ -441,7 +441,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                             padding: const EdgeInsets.all(13)),
                         onPressed: () {
                           Navigator.pushNamed(
-                              context, RoutesName.leadership_board);
+                              context, RoutesName.leadershipBoard);
                         },
                         child: const Text(
                           "LearderShip Board",
@@ -485,7 +485,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                             padding: const EdgeInsets.all(13)),
                         onPressed: () {
                           // routing to help page screen
-                          Navigator.pushNamed(context, RoutesName.help_Screen);
+                          Navigator.pushNamed(context, RoutesName.helpScreen);
                         },
                         child: const Text(
                           "Help",

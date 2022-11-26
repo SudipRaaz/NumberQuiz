@@ -1,10 +1,11 @@
-import 'dart:async';
+// ignore: file_names
 import 'dart:math';
 
 class CustomMethods {
   // create options
   static List<int> getOptions(int value) {
     List<int> availableOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    // ignore: non_constant_identifier_names
     List<int> Options = [];
     var randomValue = Random();
     availableOptions.shuffle();

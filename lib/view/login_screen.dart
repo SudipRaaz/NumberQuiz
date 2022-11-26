@@ -52,10 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
     if (googleUser == null) {
       return;
     }
-    final googleAuth = await googleUser?.authentication;
+    final googleAuth = await googleUser.authentication;
 
     final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+        idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
 
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: _obsecureText.value,
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           label: const Text("Password"),
                           prefixIcon: const Icon(
                             Icons.lock_rounded,

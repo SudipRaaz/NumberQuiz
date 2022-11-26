@@ -53,7 +53,7 @@ class _QuizSummaryState extends State<QuizSummary> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    // double width = MediaQuery.of(context).size.width;
     return Scaffold(
         body: FutureBuilder(
       future: readUserData(),
