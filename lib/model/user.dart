@@ -1,7 +1,7 @@
 class User {
   String? uid;
   String name;
-  int age;
+  int? age;
   String email;
   int? totalScore;
 

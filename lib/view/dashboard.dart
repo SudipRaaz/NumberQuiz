@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smile_quiz/resources/constants/appcolors.dart';
 import 'package:smile_quiz/resources/constants/constants.dart';
 import 'package:smile_quiz/resources/constants/textStyle.dart';
@@ -104,6 +105,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50))),
                 onPressed: () {
+                  GoogleSignIn().signOut();
                   Auth().signOut();
                 },
                 child: const Text(
@@ -176,7 +178,8 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                       top: 15.0,
                                     ),
                                     child: Text(
-                                      "${data['name']}",
+                                      Auth().currentUser?.displayName ??
+                                          "${data['name']}",
                                       style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),

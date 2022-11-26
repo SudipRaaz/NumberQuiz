@@ -7,7 +7,7 @@ import 'firebase_abstract.dart';
 class CloudStore extends FirebaseBase {
   // function to store user registration data to database
   @override
-  Future registerUser(String? uid, String name, String email, int age) async {
+  Future registerUser(String? uid, String name, String email, int? age) async {
     final docUser = FirebaseFirestore.instance
         .collection('Users')
         .doc(Auth().currentUser?.uid);

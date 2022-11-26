@@ -1,19 +1,23 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smile_quiz/resources/constants/appcolors.dart';
+import 'package:smile_quiz/resources/constants/textStyle.dart';
 import 'package:smile_quiz/utilities/message.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:smile_quiz/view_model/services/firestore.dart';
 import 'package:validators/validators.dart';
 
 import '../resources/components/button.dart';
+import '../view_model/services/firebase_abstract.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -42,11 +46,33 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordFocusNode.dispose();
   }
 
+  // method to use google authentication for login
+  Future googleLogIn() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      return;
+    }
+    final googleAuth = await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // creating a obj from a abstract class
+    FirebaseBase obj = CloudStore();
+    // registering user to cloud firestore from third party authenticators
+    obj.registerUser(userCredential.user?.uid,
+        userCredential.user!.displayName!, userCredential.user!.email!, 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     Authenticate obj = Auth();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -135,12 +161,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             // 9% gap space occupied
             SizedBox(
-              height: height * .09,
+              height: height * .04,
             ),
             // widget button
             Buttons(
               text: "Login",
               onPress: () {
+                FocusManager.instance.primaryFocus?.unfocus();
                 if (_emailController.text.isEmpty ||
                     !isEmail(_emailController.text)) {
                   Message.flushBarErrorMessage(
@@ -158,6 +185,47 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
             ),
+
+            // google sign button styling
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.appBar_theme,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  onPressed: () {
+                    // authentication function configuration
+                    googleLogIn();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const FaIcon(
+                        FontAwesomeIcons.google,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        child: Text(
+                          "Google Sign In",
+                          style: AppTextStyle.normal,
+                        ),
+                      ),
+                    ],
+                  )),
+            ),
+
+            Text(
+              'OR',
+              style: AppTextStyle.normal,
+            ),
+
+            // Sign Up section text and text button styling
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
