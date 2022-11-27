@@ -48,15 +48,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // method to use google authentication for login
   Future googleLogIn() async {
+    // creating object of googleSignIn plugin
     final googleUser = await GoogleSignIn().signIn();
+    // if object is null return null
     if (googleUser == null) {
       return;
     }
+    // wait for google authentication
     final googleAuth = await googleUser.authentication;
-
+    // using essential google idtoken and accessToken for user's login google account on their device
     final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-
+    // signing in to the application using the loged in creadential of their device after registering to firebase auth
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
 
@@ -69,10 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // setting available height and width
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    // creting object of Auth
     Authenticate obj = Auth();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -84,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 30),
+              // app logo decoration
               child: Container(
                   width: width * .7,
                   height: height * .3,
@@ -91,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       image: DecorationImage(
                           image: AssetImage('assets/app_logo.png')))),
             ),
+            // decorating email text field
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -100,16 +106,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   label: Text("Email"),
-                  // hintText: "abc@gmail.com",
                   prefixIcon: Icon(Icons.email_rounded),
                 ),
                 onFieldSubmitted: (value) =>
                     FocusScope.of(context).requestFocus(_passwordFocusNode),
               ),
             ),
+            // listening to value for obsecure text
             ValueListenableBuilder(
                 valueListenable: _obsecureText,
                 builder: (context, obsecureText, child) {
+                  // decorating password text field
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
@@ -124,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           suffixIcon: InkWell(
                               onTap: () {
+                                // toggling the obsecure value on tap
                                 _obsecureText.value = !_obsecureText.value;
                               },
                               child: _obsecureText.value
@@ -132,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
                 }),
+            // forgot password section
             Padding(
               padding: const EdgeInsets.only(left: 18.0),
               child: Row(
@@ -140,10 +149,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Forgot Password?"),
                   TextButton(
                       onPressed: () {
-                        if (_emailController.text.isEmpty) {
-                          // if email is empty display this message
+                        // unfocusing the pointer
+                        FocusManager.instance.primaryFocus!.unfocus();
+                        // checking for valid email formating
+                        if (_emailController.text.isEmpty ||
+                            isEmail(_emailController.text)) {
+                          // if email is empty or in invalid format display this message
                           Message.flutterToast(
-                              context, 'Enter Email to reset Password');
+                              context, 'Enter valid Email to reset Password');
                         } else {
                           try {
                             // send request for password reset to authentication page
@@ -167,17 +180,22 @@ class _LoginScreenState extends State<LoginScreen> {
             Buttons(
               text: "Login",
               onPress: () {
-                FocusManager.instance.primaryFocus?.unfocus();
+                // unfocus active pointer
+                FocusManager.instance.primaryFocus!.unfocus();
+                // checking for valid email
                 if (_emailController.text.isEmpty ||
                     !isEmail(_emailController.text)) {
                   Message.flushBarErrorMessage(
                       context, "Enter a valid Email address");
 
-                  log("enter email", name: "email empty");
+                  // log("enter email", name: "email empty");
+                  // checking for valid password
                 } else if (_passwordController.text.length < 6) {
                   Message.flushBarErrorMessage(
                       context, "Password must be at least 6 digits");
                 } else {
+                  // sign in using email and password
+                  // requesting to method of auth class
                   Auth().signInWithEmailAndPassword(
                       context,
                       _emailController.text.trim(),
@@ -196,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8))),
                   onPressed: () {
-                    // authentication function configuration
+                    // authentication function configuration to log into application using device login google account
                     googleLogIn();
                   },
                   child: Row(
@@ -232,6 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const Text("Don't have an account? "),
                 TextButton(
                     onPressed: () {
+                      // navigating to register screen using routename
                       Navigator.pushNamed(context, RoutesName.register);
                     },
                     child: const Text('Sign Up'))

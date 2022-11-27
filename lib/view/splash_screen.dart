@@ -17,39 +17,17 @@ class Splash_Screen extends StatefulWidget {
 
 // ignore: camel_case_types
 class _Splash_ScreenState extends State<Splash_Screen> {
-  // ignore: prefer_typing_uninitialized_variables
-  var token;
-
-  // ignore: prefer_typing_uninitialized_variables
-  var data;
-
-  Timer? time;
-
-  @override
-  void initState() {
-    super.initState();
-    log(Auth().currentUser.toString(), name: "User Authentication : ");
-  }
-
-  void resetSession(context) async {
-    time = Timer.periodic(const Duration(seconds: 20), (ti) {
-      Auth().signOut();
-      cancelTImer();
-    });
-  }
-
-  cancelTImer() {
-    time?.cancel();
-  }
-
   @override
   Widget build(BuildContext context) {
+    // creating a stream for auth changes to listen
     return StreamBuilder(
       stream: Auth().authStateChange,
       builder: (context, snapshot) {
+        // if snapshot from stream has data loading dashboard page
         if (snapshot.hasData) {
           return const Dashboard();
         } else {
+          // if snapshot from stream has does not have any data loading login page
           return const LoginScreen();
         }
       },

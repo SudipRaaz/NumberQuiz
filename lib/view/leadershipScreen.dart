@@ -21,6 +21,7 @@ class LeaderShipBoard extends StatelessWidget {
           centerTitle: true,
           backgroundColor: AppColors.appBar_theme,
         ),
+        // streaming total score for real time changes
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("Users")
@@ -30,10 +31,11 @@ class LeaderShipBoard extends StatelessWidget {
               rankingList = [];
               if (snapshot.hasData) {
                 snapshot.data!.docs.map((DocumentSnapshot document) {
+                  // mapping json data
                   Map data = document.data() as Map<String, dynamic>;
+                  // adding data to list
                   rankingList.add(data);
                 }).toList();
-                log(rankingList.toString(), name: ' printing firebase doc');
 
                 // return the view widgets
                 return SizedBox(
@@ -49,6 +51,8 @@ class LeaderShipBoard extends StatelessWidget {
                               color: AppColors.app_theme),
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
+
+                            // leader ship heading row
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -65,14 +69,17 @@ class LeaderShipBoard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // creating list of stream documents in list tile
                       Expanded(
                           child: ListView.builder(
                         itemBuilder: (context, index) {
+                          // highlighting current user list tile
                           return ListTile(
                               selectedTileColor: rankingList[index]['uid'] ==
                                       Auth().currentUser!.uid
                                   ? AppColors.leadershipSelectedTile
                                   : null,
+                              // list tile decoration
                               selected: true,
                               leading: CircleAvatar(
                                 backgroundColor: AppColors.app_theme,
@@ -101,6 +108,7 @@ class LeaderShipBoard extends StatelessWidget {
                                 style: AppTextStyle.leadershipBoard,
                               ));
                         },
+                        // creating list tile for all doc data
                         itemCount: rankingList.length,
                       )),
                     ],

@@ -27,6 +27,7 @@ class Message {
   }
 
   static void flutterToast(BuildContext context, String message) {
-    Fluttertoast.showToast(msg: message, gravity: ToastGravity.TOP);
+    Fluttertoast.showToast(
+        msg: message, gravity: ToastGravity.TOP, backgroundColor: Colors.red);
   }
 }

@@ -84,14 +84,17 @@ class _QuizSummaryState extends State<QuizSummary> {
                 SizedBox(
                   height: height * 0.13,
                 ),
+                // stacking widgets
                 Stack(children: [
                   CircleAvatar(
                     maxRadius: 130,
                     backgroundColor: Colors.amber[400],
                   ),
+                  // positioned widget
                   const Positioned(
                     top: 10,
                     left: 10,
+                    // decorating circle avatar
                     child: CircleAvatar(
                       maxRadius: 120,
                       backgroundColor: Color.fromARGB(34, 102, 101, 97),
@@ -99,6 +102,7 @@ class _QuizSummaryState extends State<QuizSummary> {
                     ),
                   ),
                 ]),
+                // spacing
                 SizedBox(
                   height: height * 0.03,
                 ),
@@ -124,6 +128,7 @@ class _QuizSummaryState extends State<QuizSummary> {
                         SizedBox(
                           height: _spacing,
                         ),
+                        // displaying scored secured
                         Row(
                           children: [
                             Text(
@@ -134,6 +139,7 @@ class _QuizSummaryState extends State<QuizSummary> {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
+                              // decorating container
                               child: Container(
                                 height: 25,
                                 width: 25,
@@ -145,9 +151,11 @@ class _QuizSummaryState extends State<QuizSummary> {
                             )
                           ],
                         ),
+                        // constant spacing
                         SizedBox(
                           height: _spacing,
                         ),
+                        // bonus score secured
                         Row(
                           children: [
                             const Text(
@@ -171,6 +179,7 @@ class _QuizSummaryState extends State<QuizSummary> {
                         SizedBox(
                           height: _spacing,
                         ),
+                        // displaying gameMode
                         Text(
                           "Game Mode : $_gameModeString",
                           style: const TextStyle(

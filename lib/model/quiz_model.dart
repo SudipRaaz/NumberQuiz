@@ -13,11 +13,13 @@ class Question {
   String question;
   int solution;
 
+  // convert from json
   factory Question.fromJson(Map<String, dynamic> json) => Question(
         question: json["question"],
         solution: json["solution"],
       );
 
+  // conver to json
   Map<String, dynamic> toJson() => {
         "question": question,
         "solution": solution,

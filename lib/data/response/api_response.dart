@@ -3,8 +3,9 @@ import 'package:smile_quiz/data/response/status.dart';
 class ApiResponse<T> {
   Status? status;
   T? data; // dynamic function
-  String? message;
+  String? message; // message
 
+  // constructor
   ApiResponse(this.status, this.data, this.message);
 
   // when api response is loading then set Status loading from super enum class

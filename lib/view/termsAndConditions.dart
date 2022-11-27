@@ -15,6 +15,7 @@ class TermAndCondition extends StatelessWidget {
       body: ListView(
         children: [
           Column(
+            // setting column axis
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               paragraphHeading("Terms"),
@@ -34,6 +35,7 @@ class TermAndCondition extends StatelessWidget {
     );
   }
 
+  // paragraph heading d
   Widget paragraphHeading(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12, top: 10),
@@ -44,6 +46,7 @@ class TermAndCondition extends StatelessWidget {
     );
   }
 
+  // paragraph texts
   Widget paragraph(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, top: 8, right: 8),

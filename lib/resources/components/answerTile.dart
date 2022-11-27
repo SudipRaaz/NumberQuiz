@@ -10,6 +10,7 @@ class AnswerTile extends StatelessWidget {
       required this.showIcon,
       super.key});
 
+  // variable for answer tile widgets
   int answers;
   final Color? answerColor;
   final Function answerTap;
@@ -19,8 +20,10 @@ class AnswerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        // on tap function call back
         answerTap();
       },
+      // container decoration
       child: Padding(
         padding: const EdgeInsets.only(top: 12.0, left: 15, right: 15),
         child: Container(
@@ -31,15 +34,17 @@ class AnswerTile extends StatelessWidget {
               border: Border.all(
                 width: 0.5,
               ),
+              // contaiern box shadow
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black38, //Color(0xff1552ed),
+                  color: Colors.black38,
                   spreadRadius: 0.8,
                   blurRadius: 5,
                   offset: Offset(3, 7),
                 )
               ]),
           child: Row(
+            // setting row main axis
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Padding(
@@ -51,6 +56,7 @@ class AnswerTile extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 ),
               ),
+              // setting dynamic answer option
               Text(
                 "$answers",
                 style: const TextStyle(fontSize: 22),

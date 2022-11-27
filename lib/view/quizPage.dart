@@ -22,25 +22,27 @@ class QuizPage extends StatefulWidget {
   QuizPage({required this.timeAvailable, required this.gameMode, super.key});
 
   // ignore: prefer_typing_uninitialized_variables
-  final timeAvailable;
-  bool gameMode;
+  final timeAvailable; // time available for each quiz questions
+  bool gameMode; // game mode selected
 
   @override
   State<QuizPage> createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
+  // creating object of question viewmodel
   Question_viewModel questionviewModel = Question_viewModel();
-  Question? _quizGame;
+  Question? _quizGame; // creating object of question class
   // ignore: non_constant_identifier_names
   final QuizRepository _quiz_repo = QuizRepository();
 
-  bool _isLoaded = false;
-  bool answerSelected = false;
-  bool endOfQuiz = false;
+  bool _isLoaded =
+      false; // is the question loaded from the API (question status)
+  bool answerSelected = false; // is answer selected by user
+  bool endOfQuiz = false; // have the user reached the end of the quiz
 
   // constant values
-  int questionIndex = 0;
+  int questionIndex = 0; // tracking the questio index
   // accepts only static constant values
   int totalQuestions = AppConstant
       .totalQuestions; // total number of question to ask in each game
@@ -48,23 +50,27 @@ class _QuizPageState extends State<QuizPage> {
   late double timeLeft; // time remaining for user for each questions
   late double maxTime; // max time available for each questions
 
-  // timer
+  // timer object
   Timer? _timer;
-
+  // list of availble options for each quiz question
   List<int> answerOptions = [];
 
   @override
   void initState() {
+    // getQuestion on page initialization
     getQuestion();
-    timeLeft = widget.timeAvailable;
-    maxTime = widget.timeAvailable;
-    log("time set $timeLeft", name: "time setted");
+    timeLeft = widget
+        .timeAvailable; // time available based on quiz mode selected by user
+    maxTime = widget.timeAvailable; // maximum time available for each question
+    // log("time set $timeLeft", name: "time setted");
+    // after the flutter engine finish building the widget frame start the timer
     WidgetsBinding.instance.addPostFrameCallback((_) => _startTimer());
     super.initState();
   }
 
   @override
   void dispose() {
+    // onpage disposal
     debugPrint("disposed");
     _cancelTimer();
     super.dispose();
@@ -73,20 +79,23 @@ class _QuizPageState extends State<QuizPage> {
   // checking the answer and marking question set as answered
   void questionAnswered(int answered, int correctAnswer) {
     setState(() {
-      answerSelected = true;
-      _cancelTimer();
+      answerSelected = true; // update answerSelected to true
+      _cancelTimer(); // cancel the timer once answered
     });
 
     if (answered == correctAnswer) {
+      // answer selected matches the correctAnswer increment totalScore
       totalScore++;
     }
   }
 
   // get the question set from the smile api
   getQuestion() async {
+    // fetchGame question
     _quizGame = await _quiz_repo.fetchGameQuestionsAPI();
     if (questionIndex != totalQuestions) {
       if (_quizGame != null) {
+        // _quizGame is not null
         setState(() {
           _isLoaded = true; // question loaded
           answerSelected = false; // answer selected status
@@ -96,14 +105,18 @@ class _QuizPageState extends State<QuizPage> {
           // increase question index
           questionIndex++;
           if (questionIndex == totalQuestions) {
+            // questionIndex has reached the end of the question the update endOfQuiz = true
             endOfQuiz = true;
           }
         });
       }
     } else {
+      // cancel timer when question ends
       _cancelTimer();
+      // dispose current page
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
+      // navigate to quiz summary page with total score secured and gamemode played on
       // ignore: use_build_context_synchronously
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => QuizSummary(
@@ -116,6 +129,7 @@ class _QuizPageState extends State<QuizPage> {
   // reset timer
   void _resetTimer() {
     setState(() {
+      // set timer to initial time
       timeLeft = widget.timeAvailable;
     });
   }
@@ -127,14 +141,18 @@ class _QuizPageState extends State<QuizPage> {
 
 // timer functions
   void _startTimer() {
+    // timer frequency
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       // if this page is still mounted to widget tree then proceed
       if (mounted) {
+        // so that its state can no longer be updated
         setState(() {
           if (timeLeft > 0) {
-            timeLeft--;
+            // if timeleft is greater than 0
+            timeLeft--; // keep decrementing timeleft
             debugPrint(timeLeft.toString());
           } else {
+            // else cancel timer
             _cancelTimer();
             answerSelected = true;
           }

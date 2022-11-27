@@ -12,6 +12,7 @@ class User {
       required this.age,
       this.totalScore});
 
+  // convert tojson
   Map<String, dynamic> toJson() => {
         'uid': uid,
         'name': name,
@@ -20,6 +21,7 @@ class User {
         'TotalScore': totalScore
       };
 
+  // convert fromjson
   static User fromJson(Map<String, dynamic> json) => User(
       name: json['name'],
       email: json['email'],

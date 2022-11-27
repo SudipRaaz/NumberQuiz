@@ -22,19 +22,22 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   final double _buttonGap = 8; // widget spacing gap
   var _quizMode = false; // quiz mode selection (hard or easy)
-  final bool _isVerified = Auth().currentUser!.emailVerified;
-
+  final bool _isVerified = Auth()
+      .currentUser!
+      .emailVerified; // storing verified and non-verified users in variable
   List _scoreData = []; // is user's email verified or not
 
   @override
   void initState() {
-    log(Auth().currentUser.toString(), name: "User Authentication : ");
+    // log(Auth().currentUser.toString(), name: "User Authentication : ");
+    // adding observer to widgetBinding on page initialization
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
+    // removing widgetbinding instance on page disposal
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -42,34 +45,47 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
+      // when the application in paused
       case AppLifecycleState.paused:
         _startTimer();
-        debugPrint("application paused");
+        debugPrint(
+            "application paused"); // printing application paused only in debug mode
         break;
+      // performing actions on application resumed or on warm boot
       case AppLifecycleState.resumed:
         _cancelTimer();
         _resetTimer(AppConstant.sessionTimer);
         debugPrint("application resumed");
         break;
+      // when the application is inactive
       case AppLifecycleState.inactive:
         break;
+      // when the application is detached from running state
       case AppLifecycleState.detached:
         break;
     }
+    // notify observer on state change
     super.didChangeAppLifecycleState(state);
   }
 
+  // creating instance of timer abstract class
   Timer? _timer;
+  // timer left for the session expiry
   int timeLeft = AppConstant.sessionTimer;
 
+  // start timer method
   void _startTimer() {
+    // setting the timer frequency
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       // if this page is still mounted to widget tree then proceed
       if (timeLeft > 0) {
+        // if the timeleft is more than 0 continue deducting 1 at a time
         timeLeft--;
         debugPrint(timeLeft.toString());
       } else {
+        // timeleft has over then perform cancel timer
         _cancelTimer();
+        // alert the user that session has expired
         alertDialogSession(context);
       }
     });
@@ -80,10 +96,12 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
     timeLeft = timeAvailable;
   }
 
+  // cancel timer
   void _cancelTimer() {
     _timer?.cancel();
   }
 
+  // stream path to remote repository
   final Stream _userStream = FirebaseFirestore.instance
       .collection("Users")
       .doc(Auth().currentUser!.uid)
@@ -91,21 +109,28 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // available height from the available device
     var height = MediaQuery.of(context).size.height;
+    // creating object of CloudStore from abstract class firebaseBase
     FirebaseBase obj = CloudStore();
     return Scaffold(
       appBar: AppBar(
+        // initializing constant app theme color
         backgroundColor: AppColors.appBar_theme,
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
+            // evelated button
             child: ElevatedButton(
+                // stylying button
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.app_background,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50))),
                 onPressed: () {
+                  // google signout
                   GoogleSignIn().signOut();
+                  // auth signout
                   Auth().signOut();
                 },
                 child: const Text(
@@ -115,12 +140,14 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
           ),
         ],
       ),
+      // creating a stream for user data,game score data, and email verification data
       drawer: StreamBuilder(
           stream: _userStream,
           builder: (context, snapshot) {
             _scoreData = [];
             if (snapshot.hasData) {
               var data = snapshot.data;
+              // addint snapshot data into a list
               _scoreData.add(data);
 
               // get the snapshot data of user
@@ -133,7 +160,9 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                     children: [
                       Container(
                           height: height * 0.38,
+                          // decoraiting container
                           decoration: const BoxDecoration(
+                              // adding gradient
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -146,11 +175,13 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                               ])),
                           child: Center(
                             child: Column(
+                                // setting column alignment axis
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Stack(
                                     children: [
+                                      // adding circle avatar at bottom of the stack
                                       CircleAvatar(
                                         radius: 50.0,
                                         backgroundImage: NetworkImage(
@@ -158,18 +189,21 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                               "https://th.bing.com/th/id/OIP.7jKcNNIq8rQLPZqRym9qvwHaIN?pid=ImgDet&rs=1",
                                         ),
                                       ),
+                                      // if user is verfied add blue verified icon on top of profile image
                                       _isVerified
                                           ? const Positioned(
                                               right: 0,
                                               child: CircleAvatar(
                                                 radius: 12,
                                                 backgroundColor: Colors.white,
+                                                // verified icon
                                                 child: Icon(
                                                   Icons.verified,
                                                   color: Colors.blue,
                                                 ),
                                               ),
                                             )
+                                          // if not verified adding nothing on top of profile image
                                           : const SizedBox(),
                                     ],
                                   ),
@@ -177,6 +211,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                     padding: const EdgeInsets.only(
                                       top: 15.0,
                                     ),
+                                    // displaying user name from stream
                                     child: Text(
                                       Auth().currentUser?.displayName ??
                                           "${data['name']}",
@@ -191,9 +226,11 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15.0),
                         child: Row(
+                          // setting row axis
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
+                              // setting axis
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
@@ -207,6 +244,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
+                                  // adding a switch to be toggled
                                   child: Transform.scale(
                                     scale: 1.3,
                                     child: Switch(
@@ -216,6 +254,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                           _quizMode = !_quizMode;
                                         });
                                       },
+                                      // toggle color
                                       activeColor: const Color.fromARGB(
                                           255, 255, 62, 48),
                                       activeTrackColor: const Color.fromARGB(
@@ -236,6 +275,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                           ],
                         ),
                       ),
+                      // adding list tile
                       ListTile(
                         title: Row(
                           children: [
@@ -245,6 +285,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                 fontSize: 16,
                               ),
                             ),
+                            // adding asset image in container
                             Container(
                               height: 25,
                               width: 25,
@@ -253,6 +294,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                       image: AssetImage(
                                           'assets/pictures/star.png'))),
                             ),
+                            // displaying user's total score from stream
                             Text(
                               '  ${data['TotalScore']}',
                               style: const TextStyle(
@@ -281,6 +323,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                 !_isVerified
                                     ? Center(
                                         child: ElevatedButton(
+                                            // styling elevated button
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     AppColors.app_background,
@@ -289,6 +332,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                                                         BorderRadius.circular(
                                                             50))),
                                             onPressed: () {
+                                              // sending email verfication on button tapped
                                               obj.sendEmailVerfication();
                                             },
                                             child: const Text(
@@ -322,6 +366,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                       ),
                       ListTile(
                         title: Column(
+                          // displaying last loged in date
                           children: [
                             const Text("Last Signed In"),
                             Text(Auth()
@@ -338,12 +383,14 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                     ]),
               );
             } else {
+              // snapshot does not have data show loading progress bar
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
           }),
       body: Container(
+          // taking all available space
           width: double.infinity,
           height: double.infinity,
           color: AppColors.app_background,
@@ -352,7 +399,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
               const Spacer(
                 flex: 1,
               ),
-
+              // addign a constant image in container
               Container(
                 height: 300,
                 width: 300,
@@ -371,6 +418,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                   children: [
                     Positioned.fill(
                         child: Container(
+                      // adding decoration
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 3.0,
@@ -394,11 +442,13 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                         onPressed: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
+                            //  returning quiz page with the requied parameters
                             return QuizPage(
-                              timeAvailable: _quizMode
-                                  ? AppConstant.hardModeTimer
-                                  : AppConstant.easyModeTimer,
-                              gameMode: _quizMode,
+                              timeAvailable:
+                                  _quizMode // quiz time based on quiz mode selected
+                                      ? AppConstant.hardModeTimer
+                                      : AppConstant.easyModeTimer,
+                              gameMode: _quizMode, // quiz mode bool value
                             );
                           }));
                         },
@@ -409,6 +459,7 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
                   ],
                 ),
               ),
+              // adding space
               SizedBox(
                 height: _buttonGap,
               ),
@@ -508,12 +559,14 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
         barrierDismissible: false, // disable dialog dismiss on outside touch
         context: context,
         builder: (context) => AlertDialog(
+              // alert dialog to notify user
               backgroundColor: const Color.fromARGB(255, 246, 199, 60),
-              title: const Text('Session Expired'),
+              title: const Text('Session Expired'), // constant value added
               content: const Text('Please, Login again'),
               actions: [
                 TextButton(
                     onPressed: () {
+                      // logging user out on tap
                       Auth().signOut();
                       Navigator.pop(context);
                     },

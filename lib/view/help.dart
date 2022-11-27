@@ -15,6 +15,7 @@ class HelpScreen extends StatelessWidget {
       body: ListView(
         children: [
           Column(
+            // setting column axis
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // hpw to start playing
@@ -40,6 +41,7 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
+  // paragraph heading widget
   Widget paragraphHeading(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12, top: 10),
@@ -50,6 +52,7 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
+  // paragraph widget
   Widget paragraph(String text) {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 8, top: 8),

@@ -107,6 +107,7 @@ class _RegisterState extends State<Register> {
                       FocusScope.of(context).requestFocus(_passwordFocusNode),
                 ),
               ),
+              // age picker section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: Row(
@@ -211,6 +212,7 @@ class _RegisterState extends State<Register> {
                   else if (_passwordController.text.length < 6) {
                     Message.flushBarErrorMessage(
                         context, "Password must be at least 6 digits");
+                    // checking if user agrees to terms and conditions of application
                   } else if (!_checkBoxValue) {
                     Message.flushBarErrorMessage(
                         context, "Accept to terms and conditions to proceed");
@@ -228,6 +230,7 @@ class _RegisterState extends State<Register> {
 
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
+                      // catch any exceptions occured
                     } catch (e) {
                       Message.flushBarErrorMessage(context, e.toString());
                     }
