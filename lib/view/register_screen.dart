@@ -3,7 +3,7 @@ import 'package:smile_quiz/resources/constants/appcolors.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:validators/validators.dart';
 import '../resources/components/button.dart';
-import '../utilities/message.dart';
+import '../utilities/ErrorMessageContainer/message.dart';
 import '../view_model/services/authentication.dart';
 
 class Register extends StatefulWidget {

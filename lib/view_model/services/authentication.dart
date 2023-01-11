@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smile_quiz/utilities/message.dart';
+import 'package:smile_quiz/utilities/ErrorMessageContainer/message.dart';
 import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 
 import 'firebase_abstract.dart';

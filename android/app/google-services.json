@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "993818877548-pjgmatau3bpu55kdo8kp19865j1u4lo4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smile_quiz",
+            "certificate_hash": "7bc6a3b3ac5b3b6fd9cb59d429fb4a39b7edf6cb"
+          }
+        },
+        {
           "client_id": "993818877548-goea3me11sgcga1it1a5kop579ht5t9j.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,49 @@
             {
               "client_id": "993818877548-goea3me11sgcga1it1a5kop579ht5t9j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "993818877548-9ujfm4u794ntlfkp5gsb7neeeevbo6nq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smileQuiz"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993818877548:android:9973eb58e9ff494cc48249",
+        "android_client_info": {
+          "package_name": "com.sudiprajadhikari.smily_quiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993818877548-goea3me11sgcga1it1a5kop579ht5t9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA127jVDYgbIqwPDxmSxB4O9d-8T4XNXKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993818877548-goea3me11sgcga1it1a5kop579ht5t9j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "993818877548-9ujfm4u794ntlfkp5gsb7neeeevbo6nq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smileQuiz"
+              }
             }
           ]
         }

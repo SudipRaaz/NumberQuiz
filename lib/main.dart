@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:smile_quiz/utilities/route/routes.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
@@ -8,6 +9,8 @@ Future<void> main() async {
   // initializing firebase repository
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   // running application on flutter engine
   runApp(const MyApp());
 }

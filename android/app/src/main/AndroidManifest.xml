@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.smile_quiz">
+    package="com.sudiprajadhikari.smily_quiz">
+    <uses-permission
+     android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    <application
-        android:label="smile_quiz"
+        android:label="Smily Quiz"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

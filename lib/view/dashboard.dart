@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smile_quiz/resources/constants/appcolors.dart';
@@ -410,6 +411,13 @@ class _DashboardState extends State<Dashboard> with WidgetsBindingObserver {
               const Spacer(
                 flex: 1,
               ),
+
+              // testing button
+              // ElevatedButton(
+              //     onPressed: () {
+              //       FirebaseCrashlytics.instance.crash();
+              //     },
+              //     child: Text('Test Crash')),
 
               // play game button created and function assigned
               ClipRRect(

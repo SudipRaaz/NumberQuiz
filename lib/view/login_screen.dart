@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:smile_quiz/resources/constants/appcolors.dart';
 import 'package:smile_quiz/resources/constants/textStyle.dart';
-import 'package:smile_quiz/utilities/message.dart';
+import 'package:smile_quiz/utilities/ErrorMessageContainer/message.dart';
 import 'package:smile_quiz/utilities/route/routes_name.dart';
 import 'package:smile_quiz/view_model/services/Authentication_base.dart';
 import 'package:smile_quiz/view_model/services/authentication.dart';
@@ -152,20 +152,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         // unfocusing the pointer
                         FocusManager.instance.primaryFocus!.unfocus();
                         // checking for valid email formating
+
                         if (_emailController.text.isEmpty ||
                             isEmail(_emailController.text)) {
-                          // if email is empty or in invalid format display this message
-                          Message.flutterToast(
-                              context, 'Enter valid Email to reset Password');
-                        } else {
                           try {
                             // send request for password reset to authentication page
                             obj.passwordReset(
                                 context, _emailController.text.trim());
                           } catch (e) {
-                            // catch any exception or errors
+                            // show exception message
                             Message.flutterToast(context, e.toString());
                           }
+                        } else {
+                          // if email is empty or in invalid format display this message
+                          Message.flutterToast(
+                              context, 'Enter valid Email to reset Password');
                         }
                       },
                       child: const Text('Reset Password'))
